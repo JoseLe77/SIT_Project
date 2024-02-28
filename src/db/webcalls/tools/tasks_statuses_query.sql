@@ -1,0 +1,1 @@
+    SELECT sts_code, status FROM statuses s ORDER BY sts_id

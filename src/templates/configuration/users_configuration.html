@@ -1,0 +1,73 @@
+{% extends './configuration.html' %}
+{% block customCSS %}{% endblock %}
+{% block title %}Users Configuration{% endblock %}
+{% block configuration %}
+    <main class="contenedor-ancho">
+        <p>USERS CONFIGURATION</p>
+        <main class="contenedor-ancho grid col-3 med-col-2 peq-col-1">
+        <section class="card">
+            <h2 class="display-4 texto-derecha no-margen" style="color:var(--color-rojo); font-weight:bold;">NEW USER</h2>
+            <form action="/users_configuration" method="POST" class="main-section_form ">
+                <label for="wh_id" style="font-weight:bold;">Warehouse</label>
+                <select class="form-control input" id="wh_id" name="wh_id" placeholder="warehouse number">
+                    <option name="warehouse">{{ warehouse_logged }}</option>
+                </select>
+                <label for="usr_id" style="font-weight:bold;">User</label>
+                <input type="text" class="form-control input" id="usr_id" name="usr_id" placeholder="User">
+                <label for="usr_nam" style="font-weight:bold;">Name</label>
+                <input type="text" class="form-control input" id="usr_nam" name="usr_nam" placeholder="Name">
+                <label for="usr_surnam" style="font-weight:bold;">Surname</label>
+                <input type="text" class="form-control input" id="usr_surnam" name="usr_surnam" placeholder="Surname">
+                <div class="form_split">
+                    <div>
+                        <label for="hie_nam" style="font-weight:bold;">Hierarchy</label>
+                        <select id="hie_nam" name="hie_nam" class="margen-inferior" style="border:none; height:45px;">
+                            {% for hierarchy in hierarchies_to_select %}
+                                <option value="{{ hierarchy.0 }}">{{ hierarchy.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <div>
+                        <label for="pri_nam" style="font-weight:bold;">Role</label>
+                         <select id="pri_nam"  name="pri_nam" class="margen-inferior" style="border:none; height:45px;">
+                            {% for role in role_to_select %}
+                                <option value="{{ role.0 }}">{{ role.1 }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                </div>
+                <button class="boton" type="submit">Save</button>
+            </form>
+        </section>
+             <section class="card span-2 scroll-vertical">
+             <table class="tabla" id="tabla" >
+                <thead class="tabla-encabezado-fijo">
+                    <tr>
+                        <th class="texto-centrado">USER</th>
+                        <th class="texto-centrado">NAME</th>
+                        <th class="texto-centrado">SURNAME</th>
+                        <th class="texto-centrado">HIERARCHY</th>
+                        <th class="texto-centrado">ROLE</th>
+                        <th class="texto-centrado">STATUS</th>
+                        <th class="texto-centrado">ACTION</th>
+                    </tr>
+                </thead>
+                <tbody class="tabla_con_encabezado">
+                    {% for user in all_users_results %}
+                        <tr>
+                            <td style="text-align:center; font-weight:bold; text-transform: uppercase; color: var(--color-primario)">{{ user.0 }}</td>
+                            <td style="text-align:center; color: var(--color-primario)">{{ user.1 }}</td>
+                            <td style="text-align:center; color: var(--color-primario)">{{ user.2 }}</td>
+                            <td style="text-align:center; color: var(--color-primario)" value="{{user.3}}">{{ user.4 }}</td>
+                            <td style="text-align:center; color: var(--color-primario)" value="{{user.5}}">{{ user.6 }}</td>
+                            <td class="{{ user.7 }}" style="font-weight:bold; text-align:center; color: var(--color-primario)">{{ user.7 }}</td>
+                            <td class="texto-centrado">
+                                <a href="/edit_users/{{ user.0 }}" class="boton verde">Edit</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </section>
+    </main>
+{% endblock %}

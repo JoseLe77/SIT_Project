@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>{% block title %}{% endblock %}</title>
+    <link rel="shortcut icon" href="../static/img/favicon.ico"/>
+    <link rel="stylesheet" href="../static/css/framework.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@24,300,0,0" />
+    {% block customCSS %}{% endblock %}
+</head>
+<body>
+    <header class="contenedor-ancho no-margen header-header">
+        <div class="header-title">
+            <picture>
+                <source media="(max-width:1400px)" srcset="../static/img/DHL_rgb.png">
+                <img class="header-img no-margen" src="../static/img/DHL_rgb.png" alt="DHL Forms" style="width: 250px;">
+            </picture>
+            <p class="wh_data no-margen">{{warehouse_logged}}</p>
+        </div>
+        <div class="usuario">
+            <p class="user no-margen padding-izquierda">{{user_logged}}</p>
+        </div>
+        <nav class="menu" style="background: transparent;">
+            <ul>
+                <li><a type="button" href="{{url_for('home')}}"><span class="material-symbols-outlined">Home</span>&nbsp;Home</a></li>
+                <li><a href="{{url_for('forms')}}"><span class="material-symbols-outlined">Wysiwyg</span>&nbsp;Forms</a></li>
+                <li><a href="{{url_for('tools')}}"><span class="material-symbols-outlined">Build</span>&nbsp;Tools</a></li>
+                <li class="{{user_privileges}}"><a href="{{url_for('configuration_home')}}"><span class="material-symbols-outlined">Settings</span>&nbsp;Configuration</a></li>
+                <li><a href="{{url_for('logout')}}"><span class="material-symbols-outlined">logout</span></a></li>
+            </ul>
+        </nav>
+        </header>
+    {% block main %}{% endblock %}
+    <footer></footer>
+</body>
+</html>

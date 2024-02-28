@@ -1,0 +1,59 @@
+{% extends './base.html' %}
+{% block customCSS %}{% endblock %}
+{% block title %}Tools{% endblock %}
+{% block main %}
+<div class="contendor-ancho">
+    <nav class="menu tools_menu">
+        {%for button in enabled_tools_results %}
+         <ul>
+              <li>
+                <a href="{{ button.1}}" style="color:#fff;" target="_blank">{{ button.0 }}</a>
+              </li>
+         </ul>
+        {%- endfor -%}
+        <!-- older one
+        <ul>
+            <li><a href="https://servicenow.dhl.com/navpage.do" style="color:#fff;" target="_blank">Service NOW</a></li>
+            <li><a href="https://cssp.dhl.com/" style="color:#fff;" target="_blank">Customer Self Service</a></li>
+            <li><a href="https://jdawmaccess.dhl.com/jda_cas/login?service=https%3A%2F%2Fjdawmaccess.dhl.com%2Fjda_uam%2Fapp%2Fsec%2FHomePage%3FfatUm" style="color:#fff;" target="_blank">UAM</a></li>
+            <li><a href="https://theview-mlemea.phx-dc.dhl.com/rafdash/login.jsp" style="color:#fff;" target="_blank">The View</a></li>
+        </ul>
+        --->
+    </nav>
+</div>
+<main class="contenedor-ancho">
+    <section class="contenedor-ancho span-2 scroll-vertical">
+        <article class="">
+            <a href="{{url_for('new_task')}}" class="boton margen-inferior padding-inferior no-margen-superior no-padding-superior" style="line-height:2.5; align-item: center;">Add Task</a>
+        </article>
+        <article>
+             <table class="tabla margen-inferior" id="tabla" >
+                <thead class="tabla-encabezado-fijo">
+                    <tr>
+                        <th class="texto-centrado ancho-numero" >Nr.</th>
+                        <th class="texto-centrado">TASK</th>
+                        <th class="texto-centrado">DESCRIPTION</th>
+                        <th class="texto-centrado">COMMENTS</th>
+                        <th class="texto-centrado">STATUS</th>
+                    </tr>
+                </thead>
+                <tbody class="tabla_con_encabezado">
+                    {% for todo in active_todo_results %}
+                        <tr>
+                            <td style="font-weight:bold; text-transform: uppercase; color: var(--color-primario)">{{ todo.0 }}</td>
+                            <td>
+                                <a href="{{ todo.2 }}" style="text-decoration: none;  color: var(--color-primario);" target="_blank"><span style="font-weight:bold;">{{ todo.1 }}</span></a>
+                            </td>
+                            <td style="color: var(--color-primario)">{{ todo.2 }}</td>
+                            <td class="{{ tool.3 }}" style="font-weight:bold; color: var(--color-primario)">{{ todo.3 }}</td>
+                            <td class="texto-centrado">
+                                <a href="/edit_tools/{{ tool.0 }}" class="boton verde">Edit</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </article>
+    </section>
+</main>
+{% endblock %}

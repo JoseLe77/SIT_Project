@@ -1,0 +1,1 @@
+SELECT wh_id||' - '||wh_nam warehouse FROM warehouses WHERE wh_active = 1 ORDER BY wh_id ASC

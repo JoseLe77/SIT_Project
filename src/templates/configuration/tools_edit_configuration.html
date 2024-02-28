@@ -1,0 +1,54 @@
+{% extends './configuration.html' %}
+{% block customCSS %}{% endblock %}
+{% block title %}Forms Configuration{% endblock %}
+{% block configuration %}
+<main class="contenedor-ancho grid col-3 med-col-2 peq-col-1">
+    <section class="card">
+        <h2 class="display-4 texto-derecha no-margen" style="color:var(--color-rojo); font-weight:bold;">EDIT BUTTON</h2>
+        <form action="/update_tool/{{data2edit[0][0]}}" method="POST" class="main-section_form ">
+            <label for="status" style="font-weight:bold;">Tool Status</label>
+            <select name="status" id="status" class="margen-inferior" style="border:none;">
+                <option value="{{data2edit[0][3]}}">{{data2edit[0][3]}}</option>
+                <option value="{{data2edit[0][4]}}">{{data2edit[0][4]}}</option>
+            </select>
+            <br>
+            <label for="wh_id" style="font-weight:bold;">Warehouse</label>
+            <select class="form-control input" id="wh_id" name="wh_id">
+                <option name="warehouse" id="warehouse">{{ warehouse_logged }}</option>
+            </select>
+            <label for="tool_num" style="font-weight:bold;">Tool button Number</label>
+            <input type="text" class="form-control input" id="tool_num" name="tool_num" value="{{data2edit[0][0]}}">
+            <label for="tool_name" style="font-weight:bold;">Tool button Name</label>
+            <input type="text" class="form-control input" id="tool_name" name="tool_name" value="{{data2edit[0][1]}}">
+            <label for="tool_url" style="font-weight:bold;">Tool button URL address</label>
+            <input type="url" class="form-control input" id="tool_url" name="tool_url" value="{{data2edit[0][2]}}">
+            <button class="boton" type="submit">Save</button>
+            <button class="boton" type="submit"><a href="{{url_for('tools_config')}}">Cancel</a></button>
+        </form>
+    </section>
+    <section class="card span-2 scroll-vertical">
+         <table class="tabla" id="tabla" >
+            <thead class="tabla-encabezado-fijo">
+                <tr>
+                    <th class="texto-centrado ancho-numero" >Nr.</th>
+                    <th class="texto-centrado">NAME</th>
+                    <th class="texto-centrado">URL ADDRESS</th>
+                    <th class="texto-centrado">STATUS</th>
+                </tr>
+            </thead>
+            <tbody class="tabla_con_encabezado">
+                {% for tool in all_tools_results %}
+                    <tr>
+                        <td style="font-weight:bold; text-transform: uppercase; color: var(--color-primario)">{{ tool.0 }}</td>
+                        <td>
+                            <a href="{{ tool.2 }}" style="text-decoration: none;  color: var(--color-primario);" target="_blank"><span style="font-weight:bold;">{{ tool.1 }}</span></a>
+                        </td>
+                        <td style="color: var(--color-primario)">{{ tool.2 }}</td>
+                        <td class="{{ tool.3 }}" style="font-weight:bold; color: var(--color-primario)">{{ tool.3 }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</main>
+{% endblock %}

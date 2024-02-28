@@ -1,0 +1,30 @@
+{% extends './base.html' %}
+{% block customCSS %}{% endblock %}
+{% block title %}Forms{% endblock %}
+{% block main %}
+    <main class="contenedor-ancho card no-margen-superior main-forms" style="margin-top:4px;">
+    <table class="tabla" id="tabla" >
+        <thead class="tabla-encabezado-fijo">
+            <tr>
+                <th class="texto-centrado">INCIDENCIA</td>
+                <th class="texto-centrado">CONTACTO</td>
+                <th class="texto-centrado">FORMULARIO</td>
+            </tr>
+        </thead>
+        <tbody class="tabla_con_encabezado">
+            {% for form in forms_results %}
+                <tr>
+                    <td style="font-weight:bold; text-transform: uppercase; color: var(--color-primario)">{{ form.0 }}</td>
+                    <td style="text-align:center; color: var(--color-primario)">{{ form.1 }}<br>{{ form.2 }}</td>
+                    <td>
+                        <a href="{{ form.5 }}" style="text-decoration: none;  color: var(--color-primario);" target="_blank"><span style="font-weight:bold;">{{ form.3 }} - </span>{{ form.4 }}</a>
+                        <br>
+                        <a href="#" style="font-size:14px; text-decoration: none;  color: var(--color-primario);">{{ form.6 }}</a>
+                    </td>
+
+                </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</main>
+{% endblock %}

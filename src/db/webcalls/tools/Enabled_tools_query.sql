@@ -1,0 +1,2 @@
+
+SELECT tools.tool_name, tools.tool_url FROM tools JOIN warehouses ON tools.wh_id = warehouses.wh_id WHERE tools.wh_id = '{}' and warehouses.wh_active = 1 and tools.tool_active = 1 ORDER BY tools.tool_num

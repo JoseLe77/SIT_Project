@@ -1,0 +1,1 @@
+SELECT hie_id, hie_nam FROM hierarchies ORDER BY hie_num DESC
