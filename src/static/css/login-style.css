@@ -1,0 +1,57 @@
+body{
+    display:flex;
+    justify-content: space-around;
+    align-items: center;
+}
+
+.main-main{
+    margin:auto;
+    max-width: 40%;
+}
+
+.login-header{
+    background-color:   var(--color-terciario);
+    display:            flex;
+    flex-direction:     column;
+    justify-content:    space-around;
+    align-items:        center;
+    overflow:           hidden;
+}
+
+.login-header img{
+    max-width:  90%;
+    min-width:  80%;
+}
+
+.logo-title-text{
+    color:          #fff;
+    margin-top:     -10px;
+    text-shadow:    5px 6px 8px var(--color-primario);
+}
+
+.login_error{
+    background: var(--color-secundario);
+    color: #fff:
+    font-weigth: bold;
+}
+
+/*Tamaño Movil*/
+@media screen and (max-width:768px){
+    .main-main{
+        width:      95%;
+        margin:     0px;
+        padding:    0px;
+    }
+
+}
+    .login-header img{
+        max-width:  90%;
+        min-width:  85%;
+    }
+
+    .logo-title-text{
+        color:          #fff;
+        font-size:      22px;
+    }
+
+}

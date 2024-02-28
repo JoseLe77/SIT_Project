@@ -1,0 +1,1 @@
+SELECT p.pri_id, p.pri_nam FROM "privileges" p ORDER BY pri_num DESC

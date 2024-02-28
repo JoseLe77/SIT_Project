@@ -1,0 +1,42 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>login</title>
+    <link rel="shortcut icon" href="../static/img/favicon.ico"/>
+    <link rel="stylesheet" href="../static/css/framework.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/login-style.css">
+</head>
+<body>
+    <header></header>
+    <main class="contenedor main-main">
+     <section class="section card">
+            <div class="card login-header">
+                <a href="{{url_for('login')}}">
+                    <img src="{{url_for('static', filename='../static/img/DHL_rgb.png')}}" alt="DHL logo" class="login_img" style="width: 500px;">
+                </a>
+                <p class="display-3">Site IT Tools</p>
+            </div>
+            <article class="article card">
+                <form action="{{url_for('home')}}" method="GET" class="main-section_form">
+                    <label for="username" style="font-weight:bold;">User</label>
+                    <input type="text" class="form-control input" id="username" name="username" placeholder="username">
+                    <label for="warehouses" style="font-weight:bold;">Warehouse</label>
+                    <select class="form-control input" id="warehouses" name="warehouses">
+                        {% for warehouse in warehouses_results %}
+                        <option>{{ warehouse.0 }}</option>
+                        {% endfor %}
+                    </select>
+                     <!--- <input type="password" class="form-control input" id="password" name="password" placeholder="password"> -->
+                    <button class="boton" type="submit">Sign in</button>
+                </form>
+            </article>
+        </section>
+    </main>
+    <footer></footer>
+</body>
+</html>

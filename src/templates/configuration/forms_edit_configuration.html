@@ -1,0 +1,80 @@
+{% extends './configuration.html' %}
+{% block customCSS %}{% endblock %}
+{% block title %}Forms Configuration{% endblock %}
+{% block configuration %}
+<main class="contenedor-ancho grid col-3 med-col-2 peq-col-1">
+    <section class="card">
+        <h2 class="display-4 texto-derecha no-margen" style="color:var(--color-rojo); font-weight:bold;">EDIT FORM</h2>
+        <form action="/update_form/{{data2edit[0][3]}}" method="POST" class="main-section_form ">
+            <label for="status" style="font-weight:bold;">Form Status</label>
+            <select name="status" id="status" class="margen-inferior" style="border:none;">
+                <option value="{{data2edit[0][7]}}">{{data2edit[0][7]}}</option>
+                <option value="{{data2edit[0][8]}}">{{data2edit[0][8]}}</option>
+            </select>
+            <br>
+            <label for="wh_id" style="font-weight:bold;">Warehouse</label>
+            <select class="form-control input" id="wh_id" name="wh_id">
+                <option name="warehouse" id="warehouse">{{ warehouse_logged }}</option>
+            </select>
+            <label for="form_nam" style="font-weight:bold;">Form Name</label>
+            <input type="text" class="form-control input" id="form_nam" name="form_nam" value="{{data2edit[0][0]}}">
+            <div class="form_split">
+                <div>
+                    <label for="form_contact" style="font-weight:bold;">Contact</label>
+                    <input type="text" class="form-control input" id="form_contact" name="form_contact" value="{{data2edit[0][1]}}">
+                </div>
+                <div>
+                    <label for="form_tlf" style="font-weight:bold;">Telephone</label>
+                    <input type="tel" class="form-control input" id="form_tlf" name="form_tlf" value="{{data2edit[0][2]}}">
+                </div>
+            </div>
+            <div  class="form_split">
+                <div style="width:150px;">
+                    <label for="form_id" style="font-weight:bold;">Number</label>
+                    <input type="text" class="form-control input" id="form_id" name="form_id" value="{{data2edit[0][3]}}">
+                </div>
+                <div>
+                    <label for="form_inc" style="font-weight:bold;">Description</label>
+                    <input type="text" class="form-control input" id="form_inc" name="form_inc" value="{{data2edit[0][4]}}">
+                </div>
+            </div>
+            <label for="form_url" style="font-weight:bold;">URL</label>
+            <input type="url" class="form-control input" id="form_url" name="form_url"  value="{{data2edit[0][5]}}">
+            <label for="form_toolkit" style="font-weight:bold;">Info</label>
+            <textarea type="text" rows="3" class="form-control input" id="form_toolkit" name="form_toolkit">{{data2edit[0][6]}}</textarea>
+            <!--- <label for="form_active" style="font-weight:bold;">Status</label> -->
+            <!--<input type="text" class="form-control input" id="form_active" name="form_active" value="{{data2edit.8}}"> -->
+            <button class="boton" type="submit">Save</button>
+            <button class="boton" type="submit"><a href="{{url_for('forms_config')}}">Cancelar</a></button>
+        </form>
+
+
+    </section>
+    <section class="card span-2 scroll-vertical">
+         <table class="tabla" id="tabla" >
+            <thead class="tabla-encabezado-fijo">
+                <tr>
+                    <th class="texto-centrado">TYPE</th>
+                    <th class="texto-centrado">CONTACT</th>
+                    <th class="texto-centrado">FORM</th>
+                    <th class="texto-centrado">STATUS</th>
+                </tr>
+            </thead>
+            <tbody class="tabla_con_encabezado">
+                {% for form in all_forms_results %}
+                    <tr>
+                        <td style="font-weight:bold; text-transform: uppercase; color: var(--color-primario)">{{ form.0 }}</td>
+                        <td style="text-align:center; color: var(--color-primario)">{{ form.1 }}<br>{{ form.2 }}</td>
+                        <td>
+                            <a href="{{ form.5 }}" style="text-decoration: none;  color: var(--color-primario);" target="_blank"><span style="font-weight:bold;">{{ form.3 }} - </span>{{ form.4 }}</a>
+                            <br>
+                            <a href="#" style="font-size:14px; text-decoration: none;  color: var(--color-primario);">{{ form.6 }}</a>
+                        </td>
+                        <td class="{{ form.7 }}" style="font-weight:bold; color: var(--color-primario)" >{{ form.7 }}</td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
+</main>
+{% endblock %}

@@ -1,0 +1,1 @@
+SELECT usr_id, wh_id FROM users WHERE usr_id= '{}' and wh_id='{}' and usr_active=1

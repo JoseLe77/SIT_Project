@@ -1,0 +1,1 @@
+SELECT forms.form_nam, forms.form_contact, forms.form_tlf, forms.form_id, forms.form_inc, forms.form_url, forms.form_toolkit FROM forms JOIN warehouses ON forms.wh_id = warehouses.wh_id WHERE forms.form_active=1 and forms.wh_id='{}' and warehouses.wh_active = 1

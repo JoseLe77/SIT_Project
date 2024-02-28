@@ -1,0 +1,41 @@
+{% extends './configuration.html' %}
+{% block customCSS %}{% endblock %}
+{% block title %}New Task{% endblock %}
+{% block configuration %}
+<main class="contenedor-ancho grid col-1">
+    <section class="card">
+        <h2 class="display-4 texto-derecha no-margen" style="color:var(--color-rojo); font-weight:bold;">NEW TASK</h2>
+        <form action="/save_new_task" method="POST" class="main-section_form ">
+            <label for="wh_id" style="font-weight:bold;">Warehouse</label>
+            <select class="form-control input" id="wh_id" name="wh_id" placeholder="warehouse number">
+                <option name="warehouse">{{ warehouse_logged }}</option>
+            </select>
+            <label for="task_nam" style="font-weight:bold;">Task Name</label>
+            <br>
+            <input type="text" class="form-control input" style="width:50%;" id="task_nam" name="task_nam" placeholder="Task Name">
+            <br>
+            <label for="task_description" style="font-weight:bold;">Task Description</label>
+            <input type="text" class="form-control input" id="task_description" name="task_description" placeholder="Task Description">
+            <div class="form_split">
+                <div style="width:45%;">
+                    <label for="task_comments" style="font-weight:bold;">Comments</label>
+                    <textarea class="form-control input" name="task_comments" id="task_comments" style="width:100%; height: 80%;"  placeholder="Comments"></textarea>
+                </div>
+                <div style="width:45%;">
+                    <label for="task_status" style="font-weight:bold;">Status</label>
+                    <select class="form-control input" id="task_status" name="task_status" placeholder="Status">
+                        {% for status in statuses_query_results %}
+                            <option value="{{ status.0 }}">{{ status.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="task_target_date" style="font-weight:bold;">Target Date</label>
+                    <input type="date" class="form-control input" id="task_target_date" name="task_target_date" placeholder="Target Date">
+                </div>
+            </div>
+            <button class="boton" type="submit">Save</button>
+            <button class="boton verde" type="reset">Reset</button>
+            <a href="{{url_for('tools')}}" class="boton">Cancel</a>
+        </form>
+    </section>
+</main>
+{% endblock %}
