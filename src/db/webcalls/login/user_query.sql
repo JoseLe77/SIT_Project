@@ -1,0 +1,1 @@
+SELECT users.usr_nam||' '||users.usr_surnam ||' - '|| hierarchies.hie_nam AS user, pri_id  FROM users, hierarchies WHERE users.hie_id=hierarchies.hie_id and users.usr_id='{}' and users.wh_id='{}'

@@ -1,0 +1,15 @@
+{% extends './base.html' %}
+{% block customCSS %}{% endblock %}
+{% block title %}Home{% endblock %}
+{% block main %}
+<main class="contenedor-ancho">
+
+    <p>HOME</p>
+    <div class="contenedor card">
+        <img src="{{url_for('static', filename='../static/img/ticket_priorities.jpg')}}" alt="Ticket Priorities">
+    </div>
+    <!-- <div class="contenedor-ancho">
+        <iframe src="https://connect.dpdhl.com/content/page/5f6c96ac71abf158335c9e03" title="Connect" style="width:100%; height:1000px; border:none;" ></iframe>
+    </div> --->
+</main>
+{% endblock %}

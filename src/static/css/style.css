@@ -1,0 +1,169 @@
+:root{
+    --color-primario:     #252525;
+    --color-rojo:         #D40511;
+    --color-amarillo:     #FFCC00;
+}
+
+
+.header-header{
+    display:            flex;
+    flex-direction:     row;
+    justify-content:    space-between;
+    align-items:        center;
+    background-color:   var(--color-amarillo);
+    /*linear-gradient(90deg, rgb(255, 204, 0) 0%, rgb(255, 204, 0) 30%, rgb(255, 229, 127) 79%, rgb(255, 240, 178) 100%) 0% 0% no-repeat padding-box padding-box transparent;
+    transition: box-shadow 300ms cubic-bezier(0.4, 0, 0.2, 1) 0ms;*/
+    box-shadow:         rgb(0 0 0 / 20%) 0px 3px 1px -2px, rgb(0 0 0 / 14%) 0px 2px 2px 0px, rgb(0 0 0 / 12%) 0px 1px 5px 0px;
+    width:              100%;
+    z-index:            1;
+}
+
+.header-title{
+    display:            flex;
+    flex-direction:     column;
+    justify-content:    center;
+    align-items:        center;
+}
+
+.header-title img{
+    width: 250px;
+}
+
+.edit_name-button{
+    display:            flex;
+    justify-content:    space-between;
+}
+
+
+.input{
+    padding:        10px 15px;
+    border-radius:  3px;
+    border:         1px solid #d6d6d6;
+    transition:     .3s ease all;
+    width:          100%;
+    margin-bottom:  20px;
+}
+
+.input:focus{
+    border:     1px solid var(--color-primario);
+    outline:    none;
+}
+
+.S{
+    display: block;
+}
+
+.E{
+    display: block;
+}
+
+.R{
+    display: none;
+}
+
+.menu a:hover,
+.menu a:active{
+    color:      #fff;
+    background: var(--color-rojo);
+}
+
+.material-symbols-outlined{
+    font-weight:    bold;
+}
+
+.menu_transition{
+    position:   relative;
+    transition: 4s ease 1s;
+    transform:  transpate 100%;
+}
+
+.form_split{
+   display:             flex;
+   flex-direction:      row;
+   justify-content:     space-between;
+}
+
+.form_split-percent{
+    width:50%;
+}
+
+.form.boton{
+    justify-content: flex-end;
+}
+
+.tabla thead{
+    background-color:   var(--color-rojo);
+ }
+
+ .tabla td{
+    color:  var(--color-primario);
+ }
+
+.tabla tr:hover td{
+    background-color:   var(--color-amarillo);
+ }
+
+ .tabla a{
+    text-decoration:    none;
+    text-transform:     none;
+ }
+
+ .tool_menu{
+    display:            flex;
+    justify-content:    space-between;
+    background-color:   #fff;
+}
+
+.tools_menu a {
+    color:          #fff;
+    line-height:    2;
+}
+
+.wh_config{
+    display:            flex;
+    justify-content:    space-around;
+}
+
+.wh_config article{
+    width:  45%;
+}
+
+.flashes{
+    height:         50px;
+    width:          100%;
+    text-align:     center;
+    background:     var(--color-secundario);
+    color:          #fff;
+    font-weight:    bold;
+}
+
+.ancho-numero{
+    max-width: 20px;
+}
+
+.wh_header{
+    height:100px;
+}
+
+
+
+/*Tamaño Movil*/
+@media screen and (max-width:1024px){
+    .header-header{
+        flex-direction: column;
+        flex-wrap:      wrap;
+    }
+
+    .usuario{
+        padding:        0;
+        margin:         0;
+        padding-bottom: 20px;
+    }
+
+    .menu{
+       border-top: 2px solid black;
+    }
+}
+
+
+

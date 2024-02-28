@@ -1,0 +1,51 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>login</title>
+    <link rel="stylesheet" href="../static/css/framework.css">
+    <link rel="stylesheet" href="../static/css/style.css">
+    <link rel="stylesheet" href="../static/css/login-style.css">
+</head>
+<body>
+    <header class="header-login_header">
+        {% with messages = get_flashed_messages() %}
+              {% if messages %}
+                <span class="flashes contenedor-ancho">
+                {% for message in messages %}
+                    {{ message }}
+                {% endfor %}
+                </span>
+              {% endif %}
+        {% endwith %}
+    </header>
+    <main class="contenedor main-main">
+     <section class="section contenedor card peq-col-1">
+            <div class="card login-header">
+                <img src="{{url_for('static', filename='../static/img/DHL_rgb.png')}}" alt="DHL logo" class="login_img no-margin" style="width: 90%;">
+                <p class="display-3 logo-title-text no-margen">Forms</p>
+            </div>
+            <article class="article card">
+                <form action="/login" method="POST" class="main-section_form">
+                    <label for="username">User</label>
+                    <input type="text" class="form-control input" id="username" name="username" placeholder="username">
+                    <label for="warehouse">Warehouse</label>
+                     <select class="form-control input" id="warehouse" name="warehouse" placeholder="warehouse">
+                        {% for warehouse in warehouses_results %}
+                        <option>{{ warehouse.0 }}</option>
+                        {% endfor %}
+                    </select>
+                     <!--- <input type="password" class="form-control input" id="password" name="password" placeholder="password"> -->
+                    <button class="boton" type="submit">Sign in</button>
+                </form>
+                <br>
+                <span class="contenedor login_error">{{login_error}}</span>
+            </article>
+        </section>
+    </main>
+    <footer></footer>
+</body>
+</html>
