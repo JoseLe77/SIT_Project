@@ -23,8 +23,15 @@
 </div>
 <main class="contenedor-ancho">
     <section class="contenedor-ancho span-2 scroll-vertical">
-        <article class="">
-            <a href="{{url_for('new_task')}}" class="boton margen-inferior padding-inferior no-margen-superior no-padding-superior" style="line-height:2.5; align-item: center;">Add Task</a>
+        <article class="tools_actions">
+            <div class="tools_tasks">
+                <a href="{{url_for('new_task')}}" class="boton margen-inferior padding-inferior no-margen-superior no-padding-superior" style="line-height:2.5; align-item: center;">Add Task</a>
+            </div>
+            <div class="tools_tools">
+                <a href="#" class="boton margen-inferior padding-inferior no-margen-superior no-padding-superior" style="line-height:2.5; align-item: center;">Notes</a>
+                <a href="#" class="boton margen-inferior padding-inferior no-margen-superior no-padding-superior" style="line-height:2.5; align-item: center;">Calendar</a>
+                <a href="#" class="boton margen-inferior padding-inferior no-margen-superior no-padding-superior" style="line-height:2.5; align-item: center;">Barcodes</a>
+            </div>
         </article>
         <article>
              <table class="tabla margen-inferior" id="tabla" >
@@ -34,20 +41,22 @@
                         <th class="texto-centrado">TASK</th>
                         <th class="texto-centrado">DESCRIPTION</th>
                         <th class="texto-centrado">COMMENTS</th>
+                        <th class="texto-centrado">TARGET DATE</th>
                         <th class="texto-centrado">STATUS</th>
+                        <th class="texto-centrado">ACTION</th>
                     </tr>
                 </thead>
                 <tbody class="tabla_con_encabezado">
-                    {% for todo in active_todo_results %}
+                    {% for todo in all_tasks_results %}
                         <tr>
                             <td style="font-weight:bold; text-transform: uppercase; color: var(--color-primario)">{{ todo.0 }}</td>
-                            <td>
-                                <a href="{{ todo.2 }}" style="text-decoration: none;  color: var(--color-primario);" target="_blank"><span style="font-weight:bold;">{{ todo.1 }}</span></a>
-                            </td>
-                            <td style="color: var(--color-primario)">{{ todo.2 }}</td>
-                            <td class="{{ tool.3 }}" style="font-weight:bold; color: var(--color-primario)">{{ todo.3 }}</td>
+                            <td style="color: var(--color-primario) font-weight:bold text-transform: uppercase;">{{ todo.1 }}</td>
+                            <td style="color: var(--color-primario) font-weight:bold">{{ todo.2 }}</td>
+                            <td  style="color: var(--color-primario)">{{ todo.3 }}</td>
+                            <td  style="color: var(--color-primario) text-align:center;">{{ todo.5 }}</td>
+                            <td class="{{ todo.4 }}" style="color: var(--color-primario)">{{ todo.4 }}</td>
                             <td class="texto-centrado">
-                                <a href="/edit_tools/{{ tool.0 }}" class="boton verde">Edit</a>
+                                <a href="/edit_task/{{ todo.0 }}" class="boton verde">Edit</a>
                             </td>
                         </tr>
                     {% endfor %}

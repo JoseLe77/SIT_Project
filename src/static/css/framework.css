@@ -408,6 +408,11 @@ form .input:focus{
 .Enabled{background-color: #E2EFDA; text-align:center;}
 .Disabled{background-color: #FFA3A3; text-align:center;}
 
+.Pending{background-color: #FFA3A3; text-align:center;}
+."In Process"{background-color: #FFA3A3; text-align:center;}
+.Checking{background-color: #FFA3A3; text-align:center;}
+.Done{background-color: #E2EFDA; text-align:center;}
+
 
 
 

@@ -119,6 +119,11 @@
     line-height:    2;
 }
 
+.tools_actions{
+    display: flex;
+    justify-content: space-between;
+}
+
 .wh_config{
     display:            flex;
     justify-content:    space-around;

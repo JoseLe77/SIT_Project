@@ -1,0 +1,1 @@
+SELECT t.todo_id, t.todo_nam, t.todo_description, CASE WHEN t.todo_comments IS NULL OR t.todo_comments = '' THEN 'No comments' ELSE t.todo_comments END todo_comments, s.status, t.target_dte  FROM todo t, statuses s  WHERE t.todo_status = s.sts_code and t.wh_id ='{}' and t.usr_id ='{}'
