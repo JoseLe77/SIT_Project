@@ -119,6 +119,11 @@
     line-height:    2;
 }
 
+.tools_actions{
+    display: flex;
+    justify-content: space-between;
+}
+
 .wh_config{
     display:            flex;
     justify-content:    space-around;
@@ -144,8 +149,6 @@
 .wh_header{
     height:100px;
 }
-
-
 
 /*Tamaño Movil*/
 @media screen and (max-width:1024px){

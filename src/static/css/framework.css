@@ -408,6 +408,19 @@ form .input:focus{
 .Enabled{background-color: #E2EFDA; text-align:center;}
 .Disabled{background-color: #FFA3A3; text-align:center;}
 
+/* -- SATUSES CLASSES --*/
+/* -- Pending status --*/
+.P{background-color: #FFA3A3; text-align:center; line-height:2;}
+
+/* -- In Process status --*/
+.I{background-color: #f2eda7; text-align:center; line-height:2;}
+
+/* -- Checking status --*/
+.C{background-color: #f2a179; text-align:center; line-height:2;}
+
+/* -- Done status --*/
+.D{background-color: #E2EFDA; text-align:center; line-height:2;}
+
 
 
 
