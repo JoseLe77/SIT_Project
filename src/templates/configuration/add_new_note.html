@@ -1,0 +1,25 @@
+{% extends './configuration.html' %}
+{% block customCSS %}{% endblock %}
+{% block title %}New Note{% endblock %}
+{% block configuration %}
+<main class="contenedor-ancho grid col-1">
+    <section class="card">
+        <h2 class="display-4 texto-derecha no-margen" style="color:var(--color-rojo); font-weight:bold;">NEW NOTE</h2>
+        <form action="/save_new_note" method="POST" class="main-section_form ">
+            <label for="wh_id" style="font-weight:bold;">Warehouse</label>
+            <select class="form-control input" id="wh_id" name="wh_id" placeholder="warehouse number">
+                <option name="warehouse">{{ warehouse_logged }}</option>
+            </select>
+            <label for="note_title" style="font-weight:bold;">Title</label>
+            <br>
+            <input type="text" class="form-control input" style="width:50%;" id="note_title" name="note_title" placeholder="Note Title">
+            <br>
+            <label for="note_description" style="font-weight:bold;">Description</label>
+            <textarea class="form-control input" id="note_description" name="note_description" style="max-heigth:300px; min-height:200px;" placeholder="Note Description"></textarea>
+            <button class="boton verde" type="submit">Save</button>
+            <button class="boton" type="reset">Reset</button>
+            <a href="{{url_for('notes')}}" class="boton">Cancel</a>
+        </form>
+    </section>
+</main>
+{% endblock %}

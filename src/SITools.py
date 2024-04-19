@@ -208,8 +208,9 @@ def tools():
         connection.close()
 
         boton_change = ('Done Tasks','done_tasks')
+        note_change = ('Notes','notes')
 
-        return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, all_tasks_results=all_tasks_results, boton_change=boton_change)
+        return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, all_tasks_results=all_tasks_results, boton_change=boton_change, note_change=note_change)
 
 @app.route('/done_tasks')
 def done_tasks():
@@ -249,8 +250,8 @@ def done_tasks():
         connection.close()
 
         boton_change = ('Task To Do', 'tools')
-
-        return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, all_tasks_results=all_tasks_results, boton_change=boton_change)
+        note_change = ('Notes', 'notes')
+        return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, all_tasks_results=all_tasks_results, boton_change=boton_change, note_change=note_change)
 
 
 @app.route('/new_task')
@@ -429,6 +430,166 @@ def update_task(task_id):
         print("Task {} Modified".format(task_id))
         return redirect(url_for('tools'))
 
+@app.route('/notes')
+def notes():
+    if session.get('user_logged') is None:
+        login_error = 'Is not possible to access this way.'
+        flash(login_error)
+        return redirect(url_for('index'))
+    else:
+        user_logged = session.get('user_logged')
+        user_id_logged = session.get('user_id_logged')
+        user_privileges = session.get('user_privileges')
+        warehouse_logged = session.get('warehouse_logged')
+        warehouse = session.get('warehouse_logged').split()[0]
+
+        # ---- Database Connection ----
+            # connection = sqlite3.connect('../src/db/database/DB_ITools.db')
+            # cursor = connection.cursor()
+
+        # Call the db connection function
+        connection, cursor = dbconnection()
+
+        # ---- Database Active tools query ----
+        webcall = open('../src/db/webcalls/tools/Enabled_tools_query.sql', mode='r')
+        tools_query = webcall.read()
+        webcall.close()
+        tools_query = tools_query.format(warehouse)
+        cursor.execute(tools_query)
+        enabled_tools_results = cursor.fetchall()
+
+        # ---- Database Active tools query ----
+        webcall = open('../src/db/webcalls/tools/Active_notes_query.sql', mode='r')
+        notes_query = webcall.read()
+        webcall.close()
+        notes_query = notes_query.format(warehouse, user_id_logged)
+        cursor.execute(notes_query)
+        Active_notes_query = cursor.fetchall()
+        connection.close()
+
+        boton_change = ('Task To Do', 'tools')
+        note_change = ('New Note', 'new_note')
+
+        return render_template('notes.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, Active_notes_query=Active_notes_query, boton_change=boton_change, note_change=note_change)
+
+
+@app.route('/new_note')
+def new_note():
+    user_logged = session.get('user_logged')
+    user_privileges = session.get('user_privileges')
+    user_id_logged = session.get('user_id_logged')
+    warehouse_logged = session.get('warehouse_logged')
+    warehouse = session.get('warehouse_logged').split()[0]
+
+    return render_template('configuration/add_new_note.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, user_privileges=user_privileges, warehouse_logged=warehouse_logged, warehouse=warehouse)
+
+@app.route('/save_new_note', methods=["POST", "GET"])
+def save_new_note():
+    if session.get('user_logged') is None:
+        login_error = 'Is not possible to access without an user.'
+        flash(login_error)
+        return redirect(url_for('index'))
+    else:
+        if request.method == 'POST':
+            # ----------------
+            #    HTML Form
+            # ----------------
+            warehouse = request.form['wh_id']
+            warehouse = warehouse.split()[0]
+            usr_id = session.get('user_logged')
+            user_id_logged = session.get('user_id_logged')
+            note_title = request.form['note_title']
+            note_description = request.form['note_description']
+            print(warehouse, usr_id, user_id_logged, note_title, note_description)
+            # ----------------
+            #    DataBase
+            # ----------------
+            connection, cursor = dbconnection()
+
+            webcall = open('../src/db/webcalls/tools/new_note_insert_query.sql', mode='r')
+            new_note_insert_query = webcall.read()
+            webcall.close()
+            insert_new_note = new_note_insert_query.format(warehouse, user_id_logged, note_title, note_description)
+            print("task {} Created".format(note_title))
+            cursor.execute(insert_new_note)
+            connection.commit()
+            connection.close()
+
+            # ----------------
+            #    Login Data
+            # ----------------
+            user_logged = session.get('user_logged')
+            user_privileges = session.get('user_privileges')
+            user_id_logged = session.get('user_id_logged')
+            warehouse_logged = session.get('warehouse_logged')
+            warehouse = session.get('warehouse_logged').split()[0]
+
+            connection, cursor = dbconnection()
+
+            # ---- Database Active tools query ----
+            webcall = open('db/webcalls/tools/Active_notes_query.sql', mode='r')
+            notes_query = webcall.read()
+            webcall.close()
+            notes_query = notes_query.format(warehouse, user_id_logged)
+            cursor.execute(notes_query)
+            Active_notes_query = cursor.fetchall()
+            connection.close()
+
+            boton_change = ('Task To Do', 'tools')
+            note_change = ('New Note', 'new_note')
+
+        if session.get('user_privileges') == 'R':
+            return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
+        else:
+            return render_template('notes.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse, Active_notes_query=Active_notes_query, note_change=note_change, boton_change=boton_change )
+
+
+@app.route('/edit_note<string:id>')
+def edit_note(id):
+    # ----------------
+    #    Login Data
+    # ----------------
+    user_logged = session.get('user_logged')
+    user_privileges = session.get('user_privileges')
+    user_id_logged = session.get('user_id_logged')
+    warehouse_logged = session.get('warehouse_logged')
+    warehouse = session.get('warehouse_logged').split()[0]
+
+    # ----------------
+    #    DataBase
+    # ----------------
+    connection, cursor = dbconnection()
+
+    webcall = open('../src/db/webcalls/tools/data_2_edit_note_query.sql', mode='r')
+    edit_task_query = webcall.read()
+    webcall.close()
+    edit_task_query = edit_task_query.format(id, warehouse)
+    cursor.execute(edit_task_query)
+    data2edit = cursor.fetchall()
+    stats = data2edit[0][4]
+
+    # all statuses
+    webcall = open('db/webcalls/tools/data_2_edit_task_statuses_query.sql', mode='r')
+    edit_task_statuses_query = webcall.read()
+    webcall.close()
+    edit_task_statuses_query = edit_task_statuses_query.format(data2edit[0][4], data2edit[0][4])
+    cursor.execute(edit_task_statuses_query)
+    data2select = cursor.fetchall()
+
+    # all tasks
+    webcall = open('db/webcalls/tools/done_tasks_query.sql', mode='r')
+    tasks_query = webcall.read()
+    webcall.close()
+    tasks_query = tasks_query.format(warehouse, user_id_logged, warehouse, user_id_logged)
+    cursor.execute(tasks_query)
+    all_tasks_results = cursor.fetchall()
+    if session.get('user_privileges') == 'R':
+        return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged,
+                               user_privileges=user_privileges)
+    else:
+        return render_template('configuration/todo_edit_task.html', user_logged=f'{user_logged}',
+                               warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse,
+                               data2edit=data2edit, data2select=data2select, all_tasks_results=all_tasks_results)
 
 @app.route('/configuration')
 def configuration():

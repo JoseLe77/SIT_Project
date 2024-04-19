@@ -1,0 +1,49 @@
+{% extends './configuration.html' %}
+{% block customCSS %}{% endblock %}
+{% block title %}Edit Note{% endblock %}
+{% block configuration %}
+<main class="contenedor-ancho grid col-1">
+    <section class="card">
+        <h2 class="display-4 texto-derecha no-margen" style="color:var(--color-rojo); font-weight:bold;">EDIT NOTE</h2>
+        <form action="/update_note/{{data2edit[0][0]}}" method="POST" class="main-section_form ">
+            <label for="wh_id" style="font-weight:bold;">Warehouse</label>
+            <select class="form-control input" id="wh_id" name="wh_id" placeholder="warehouse number">
+                <option name="warehouse">{{ warehouse_logged }}</option>
+            </select>
+            <div class="form_split">
+                <div style="width:10%">
+                    <label for="task_id" style="font-weight:bold;">Task ID</label>
+                    <br>
+                    <input type="text" class="form-control input" style="width:90%;" id="task_id" name="task_id" disabled value="{{data2edit[0][0]}}">
+                </div>
+                <div style="width:90%">
+                    <label for="task_nam" style="font-weight:bold;">Task Name</label>
+                    <br>
+                    <input type="text" class="form-control input" style="width:100%;" id="task_nam" name="task_nam" value="{{data2edit[0][1]}}">
+                </div>
+            </div>
+            <br>
+            <label for="task_description" style="font-weight:bold;">Task Description</label>
+            <input type="text" class="form-control input" id="task_description" name="task_description" value="{{data2edit[0][2]}}">
+            <div class="form_split">
+                <div style="width:75%;">
+                    <label for="task_comments" style="font-weight:bold;">Comments</label>
+                    <textarea class="form-control input" name="task_comments" id="task_comments" style="width:100%; height: 80%;">{{data2edit[0][3]}}</textarea>
+                </div>
+                <div style="width:20%;">
+                    <label for="task_status" style="font-weight:bold;">Status</label>
+                    <select class="form-control input {{data2edit[0][4]}}" id="task_status" name="task_status">
+                        {% for status in data2select %}
+                            <option class="{{ status.0 }}" value="{{ status.0 }}">{{ status.1 }}</option>
+                        {% endfor %}
+                    </select>
+                    <label for="task_target_date" style="font-weight:bold;">Target Date</label>
+                    <input type="date" class="form-control input" id="task_target_date" name="task_target_date" value="{{data2edit[0][6]}}">
+                </div>
+            </div>
+            <button class="boton" type="submit">Save</button>
+            <a href="{{url_for('tools')}}" class="boton">Cancel</a>
+        </form>
+    </section>
+</main>
+{% endblock %}

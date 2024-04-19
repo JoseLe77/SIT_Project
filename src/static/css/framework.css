@@ -357,7 +357,15 @@ form .input:focus{
     color:          var(--color-primario);
 }
 
+.boton.oscuro{
+background: var(--color-primario);
+color: #fff;
+}
 
+.boton.oscuro:hover{
+ background: var(--color-amarillo);
+ color: #000;
+}
 
 .boton.verde{
     background: var(--color-secundario);

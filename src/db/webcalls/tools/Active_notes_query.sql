@@ -1,0 +1,1 @@
+SELECT note_id, note_title, note_description  FROM Notes n WHERE wh_id = '{}' and usr_id ='{}' and note_active = 1 order by note_id
