@@ -541,10 +541,10 @@ def save_new_note():
         if session.get('user_privileges') == 'R':
             return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
         else:
-            return render_template('notes.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse, Active_notes_query=Active_notes_query, note_change=note_change, boton_change=boton_change )
+            return render_template('notes.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse, Active_notes_query=Active_notes_query, note_change=note_change, boton_change=boton_change )
 
 
-@app.route('/edit_note<string:id>')
+@app.route('/edit_note/<string:id>')
 def edit_note(id):
     # ----------------
     #    Login Data
@@ -561,35 +561,51 @@ def edit_note(id):
     connection, cursor = dbconnection()
 
     webcall = open('../src/db/webcalls/tools/data_2_edit_note_query.sql', mode='r')
-    edit_task_query = webcall.read()
+    edit_note_query = webcall.read()
     webcall.close()
-    edit_task_query = edit_task_query.format(id, warehouse)
-    cursor.execute(edit_task_query)
+    edit_note_query = edit_note_query.format(id, user_id_logged, warehouse)
+    cursor.execute(edit_note_query)
     data2edit = cursor.fetchall()
-    stats = data2edit[0][4]
 
-    # all statuses
-    webcall = open('db/webcalls/tools/data_2_edit_task_statuses_query.sql', mode='r')
-    edit_task_statuses_query = webcall.read()
-    webcall.close()
-    edit_task_statuses_query = edit_task_statuses_query.format(data2edit[0][4], data2edit[0][4])
-    cursor.execute(edit_task_statuses_query)
-    data2select = cursor.fetchall()
-
-    # all tasks
-    webcall = open('db/webcalls/tools/done_tasks_query.sql', mode='r')
-    tasks_query = webcall.read()
-    webcall.close()
-    tasks_query = tasks_query.format(warehouse, user_id_logged, warehouse, user_id_logged)
-    cursor.execute(tasks_query)
-    all_tasks_results = cursor.fetchall()
     if session.get('user_privileges') == 'R':
         return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged,
                                user_privileges=user_privileges)
     else:
-        return render_template('configuration/todo_edit_task.html', user_logged=f'{user_logged}',
+        return render_template('configuration/tools_edit_note.html', user_logged=f'{user_logged}',
                                warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse,
-                               data2edit=data2edit, data2select=data2select, all_tasks_results=all_tasks_results)
+                               user_id_logged=user_id_logged, data2edit=data2edit)
+
+
+@app.route('/update_note/<note_id>', methods=["POST"])
+def update_note(note_id):
+    print(request.form)
+    if request.method == 'POST':
+        warehouse = request.form['wh_id']
+        warehouse = warehouse.split()[0]
+        usr_id = session.get('user_logged')
+        user_id_logged = session.get('user_id_logged')
+        note_title = request.form['note_title']
+        note_description = request.form['note_description']
+        print(warehouse, usr_id, user_id_logged, note_title, note_description, note_id)
+        print(request.form)
+
+        # ----------------
+        #    DataBas
+        # ----------------
+        connection, cursor = dbconnection()
+        # print('DB connected successfully - update')
+
+        webcall = open('../src/db/webcalls/tools/update_selected_note_query.sql', mode='r')
+        update_note_query = webcall.read()
+        webcall.close()
+        update_note_query = update_note_query.format(note_title, note_description, note_id, warehouse, user_id_logged)
+        print(update_note_query)
+        cursor.execute(update_note_query)
+        connection.commit()
+        connection.close()
+
+        print("Note {} Modified".format(note_id))
+        return redirect(url_for('notes'))
 
 @app.route('/configuration')
 def configuration():
@@ -605,7 +621,6 @@ def configuration():
             return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
         else:
             return render_template('configuration.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
-
 
 @app.route('/logout')
 def logout():
@@ -1128,6 +1143,7 @@ def update_user(usr_id):
         warehouse = request.form['wh_id']
         warehouse = warehouse.split()[0]
         user_id = request.form['usr_id']
+        usr_name = request.form['usr_nam']
         usr_name = request.form['usr_nam']
         usr_surname = request.form['usr_surnam']
         hie_name = request.form['hie_id']
