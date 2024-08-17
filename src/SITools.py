@@ -576,36 +576,78 @@ def edit_note(id):
                                user_id_logged=user_id_logged, data2edit=data2edit)
 
 
-@app.route('/update_note/<note_id>', methods=["POST"])
+@app.route('/update_note/<note_id>', methods=["POST", "GET"])
 def update_note(note_id):
     print(request.form)
-    if request.method == 'POST':
-        warehouse = request.form['wh_id']
-        warehouse = warehouse.split()[0]
-        usr_id = session.get('user_logged')
+    if session.get('user_logged') is None:
+        login_error = 'Is not possible to access without an user.'
+        flash(login_error)
+        return redirect(url_for('index'))
+    else:
+        if request.method == 'POST':
+            warehouse = request.form['wh_id']
+            warehouse = warehouse.split()[0]
+            usr_id = session.get('user_logged')
+            user_id_logged = session.get('user_id_logged')
+            note_title = request.form['note_title']
+            note_description = request.form['note_description']
+            print(warehouse, usr_id, user_id_logged, note_title, note_description, note_id)
+            print(request.form)
+
+            # ----------------
+            #    DataBase
+            # ----------------
+            connection, cursor = dbconnection()
+            # print('DB connected successfully - update')
+
+            webcall = open('../src/db/webcalls/tools/update_selected_note_query.sql', mode='r')
+            update_note_query = webcall.read()
+            webcall.close()
+            update_note_query = update_note_query.format(note_title, note_description, note_id, warehouse, user_id_logged)
+            print(update_note_query)
+            cursor.execute(update_note_query)
+            connection.commit()
+            connection.close()
+
+            print("Note {} Modified".format(note_id))
+            return redirect(url_for('notes'))
+
+
+
+
+@app.route('/delete_note/<note_id>')
+def delete_note(note_id):
+    if session.get('user_logged') is None:
+        login_error = 'Is not possible to access without an user.'
+        flash(login_error)
+        return redirect(url_for('index'))
+    else:
+        user_logged = session.get('user_logged')
+        user_privileges = session.get('user_privileges')
         user_id_logged = session.get('user_id_logged')
-        note_title = request.form['note_title']
-        note_description = request.form['note_description']
-        print(warehouse, usr_id, user_id_logged, note_title, note_description, note_id)
+        warehouse_logged = session.get('warehouse_logged')
+        warehouse = session.get('warehouse_logged').split()[0]
+        print(warehouse, user_id_logged, note_id)
         print(request.form)
 
         # ----------------
-        #    DataBas
+        #    DataBase
         # ----------------
         connection, cursor = dbconnection()
-        # print('DB connected successfully - update')
+        # print('DB connected successfully - delete')
 
-        webcall = open('../src/db/webcalls/tools/update_selected_note_query.sql', mode='r')
-        update_note_query = webcall.read()
+        webcall = open('../src/db/webcalls/tools/delete_selected_note_query.sql', mode='r')
+        delete_note_query = webcall.read()
         webcall.close()
-        update_note_query = update_note_query.format(note_title, note_description, note_id, warehouse, user_id_logged)
-        print(update_note_query)
-        cursor.execute(update_note_query)
+        delete_note_query = delete_note_query.format(note_id, warehouse, user_id_logged)
+        print(delete_note_query)
+        cursor.execute(delete_note_query)
         connection.commit()
         connection.close()
 
-        print("Note {} Modified".format(note_id))
+        print("Note {} Deleted".format(id))
         return redirect(url_for('notes'))
+
 
 @app.route('/configuration')
 def configuration():
