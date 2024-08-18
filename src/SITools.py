@@ -240,7 +240,7 @@ def done_tasks():
         cursor.execute(tools_query)
         enabled_tools_results = cursor.fetchall()
 
-        # ---- Database Active tools query ----
+        # ---- Database Active Done tools query ----
         webcall = open('../src/db/webcalls/tools/done_tasks_query.sql', mode='r')
         tasks_query = webcall.read()
         webcall.close()
@@ -324,18 +324,29 @@ def save_new_task():
             connection, cursor = dbconnection()
 
             # ---- Database Active tools query ----
-            webcall = open('db/webcalls/tools/done_tasks_query.sql', mode='r')
+            webcall = open('../src/db/webcalls/tools/Enabled_tools_query.sql', mode='r')
+            tools_query = webcall.read()
+            webcall.close()
+            tools_query = tools_query.format(warehouse)
+            cursor.execute(tools_query)
+            enabled_tools_results = cursor.fetchall()
+
+            # ---- Database Active tools query ----
+            webcall = open('../src/db/webcalls/tools/not_finished_tasks_query.sql', mode='r')
             tasks_query = webcall.read()
             webcall.close()
-            tasks_query = tasks_query.format(warehouse, user_id_logged, warehouse, user_id_logged)
+            tasks_query = tasks_query.format(warehouse, user_id_logged)
             cursor.execute(tasks_query)
             all_tasks_results = cursor.fetchall()
             connection.close()
 
+            boton_change = ('Done Tasks', 'done_tasks')
+            note_change = ('Notes', 'notes')
+
         if session.get('user_privileges') == 'R':
             return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
         else:
-            return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse, all_tasks_results=all_tasks_results)
+            return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, all_tasks_results=all_tasks_results, boton_change=boton_change, note_change=note_change)
 
 @app.route('/edit_task/<string:id>')
 def edit_task(id):
