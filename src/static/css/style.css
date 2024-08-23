@@ -150,6 +150,78 @@
     height:100px;
 }
 
+.subirArchivo{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px;
+    border-bottom: 2px solid #000;
+    background:var(--color-amarillo) ;
+}
+
+.visualizarArchivo{
+    padding: 20px 0;
+}
+
+.tabla{
+    width: 90%;
+    margin: auto;
+}
+.tabla td:nth-child(6){
+    font-family: 'IDA39';
+}
+
+.tabla tr:nth-child(1){
+    background-color: var(--color-secundario);
+    border-bottom:5px solid black;
+    color:white;
+    text-transform: bold;
+    text-transform: uppercase;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.tabla tr:nth-child(1) td:nth-child(6){
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.tabla tr:hover td{
+    background-color: var(--color-secundario-accion);
+    color:#fff;
+}
+
+
+.imprimirArchivo{
+    padding-left: 20px;
+    justify-self: flex-end;
+}
+
+.imprimirArchivo a{
+    text-decoration: none;
+    background:var(--color-secundario);
+    border: 1px solid #000;
+    box-shadow: 2px 3px 5px #000;
+}
+
+.imprimirArchivo a:hover{
+    text-decoration: none;
+    background:var(--color-secundario-accion);
+}
+
+.imprimirArchivo button{
+    text-decoration: none;
+    background:var(--color-primario);
+    border: 1px solid #000;
+    box-shadow: 2px 3px 5px #000;
+    color:#000;
+    margin-left: 20px;
+}
+
+.imprimirArchivo button:hover{
+    text-decoration: none;
+    background:var(--color-primario-accion);
+    color:#000;
+}
+
 /*Tamaño Movil*/
 @media screen and (max-width:1024px){
     .header-header{
