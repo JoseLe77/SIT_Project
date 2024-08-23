@@ -160,31 +160,33 @@
 }
 
 .visualizarArchivo{
-    padding: 20px 0;
+
+    display:flex;
+    justify-content: space-around;
 }
 
-.tabla{
-    width: 90%;
-    margin: auto;
-}
-.tabla td:nth-child(6){
-    font-family: 'IDA39';
+.tabla_csv{
+    margin-top: 10px;
 }
 
-.tabla tr:nth-child(1){
+.tabla_csv tr:nth-child(1){
     background-color: var(--color-secundario);
     border-bottom:5px solid black;
     color:white;
-    text-transform: bold;
+    font-weight: bold;
     text-transform: uppercase;
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.tabla tr:nth-child(1) td:nth-child(6){
+.tabla_csv tr:nth-child(1) a{
+    color:white;
+}
+
+.tabla_csv tr:nth-child(1) td:nth-child(6){
     font-family: Arial, Helvetica, sans-serif;
 }
 
-.tabla tr:hover td{
+.tabla_csv tr:hover td{
     background-color: var(--color-secundario-accion);
     color:#fff;
 }
