@@ -209,8 +209,9 @@ def tools():
 
         boton_change = ('Done Tasks','done_tasks')
         note_change = ('Notes','notes')
+        csv_reader_change = ('CSV Reader', 'csv_reader')
 
-        return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, all_tasks_results=all_tasks_results, boton_change=boton_change, note_change=note_change)
+        return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, all_tasks_results=all_tasks_results, boton_change=boton_change, note_change=note_change, csv_reader_change=csv_reader_change)
 
 @app.route('/done_tasks')
 def done_tasks():
@@ -251,7 +252,9 @@ def done_tasks():
 
         boton_change = ('Task To Do', 'tools')
         note_change = ('Notes', 'notes')
-        return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, all_tasks_results=all_tasks_results, boton_change=boton_change, note_change=note_change)
+        csv_reader_change = ('CSV Reader', 'csv_reader')
+
+        return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, all_tasks_results=all_tasks_results, boton_change=boton_change, note_change=note_change, csv_reader_change=csv_reader_change)
 
 
 @app.route('/new_task')
@@ -342,11 +345,12 @@ def save_new_task():
 
             boton_change = ('Done Tasks', 'done_tasks')
             note_change = ('Notes', 'notes')
+            csv_reader_change = ('CSV Reader', 'csv_reader')
 
         if session.get('user_privileges') == 'R':
             return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
         else:
-            return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, all_tasks_results=all_tasks_results, boton_change=boton_change, note_change=note_change)
+            return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, all_tasks_results=all_tasks_results, boton_change=boton_change, note_change=note_change, csv_reader_change=csv_reader_change)
 
 @app.route('/edit_task/<string:id>')
 def edit_task(id):
@@ -480,9 +484,9 @@ def notes():
 
         boton_change = ('Task To Do', 'tools')
         note_change = ('New Note', 'new_note')
+        csv_reader_change = ('CSV Reader', 'csv_reader')
 
-        return render_template('notes.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, Active_notes_query=Active_notes_query, boton_change=boton_change, note_change=note_change)
-
+        return render_template('notes.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, Active_notes_query=Active_notes_query, boton_change=boton_change, note_change=note_change, csv_reader_change=csv_reader_change)
 
 @app.route('/new_note')
 def new_note():
@@ -548,11 +552,12 @@ def save_new_note():
 
             boton_change = ('Task To Do', 'tools')
             note_change = ('New Note', 'new_note')
+            csv_reader_change = ('CSV Reader', 'csv_reader')
 
         if session.get('user_privileges') == 'R':
             return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
         else:
-            return render_template('notes.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse, Active_notes_query=Active_notes_query, note_change=note_change, boton_change=boton_change )
+            return render_template('notes.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse, Active_notes_query=Active_notes_query, note_change=note_change, boton_change=boton_change, csv_reader_change=csv_reader_change)
 
 
 @app.route('/edit_note/<string:id>')
@@ -623,9 +628,6 @@ def update_note(note_id):
             print("Note {} Modified".format(note_id))
             return redirect(url_for('notes'))
 
-
-
-
 @app.route('/delete_note/<note_id>')
 def delete_note(note_id):
     if session.get('user_logged') is None:
@@ -659,6 +661,36 @@ def delete_note(note_id):
         print("Note {} Deleted".format(id))
         return redirect(url_for('notes'))
 
+
+@app.route('/csv_reader')
+def csv_reader():
+    if session.get('user_logged') is None:
+        login_error = 'Is not possible to access this way.'
+        flash(login_error)
+        return redirect(url_for('index'))
+    else:
+        user_logged = session.get('user_logged')
+        user_id_logged = session.get('user_id_logged')
+        user_privileges = session.get('user_privileges')
+        warehouse_logged = session.get('warehouse_logged')
+        warehouse = session.get('warehouse_logged').split()[0]
+
+        # Call the db connection function
+        connection, cursor = dbconnection()
+
+        # ---- Database Active tools query ----
+        webcall = open('../src/db/webcalls/tools/Enabled_tools_query.sql', mode='r')
+        tools_query = webcall.read()
+        webcall.close()
+        tools_query = tools_query.format(warehouse)
+        cursor.execute(tools_query)
+        enabled_tools_results = cursor.fetchall()
+
+        boton_change = ('Task To Do', 'tools')
+        note_change = ('Notes','notes')
+        csv_reader_change = ('CSV Reader','csv_reader')
+
+        return render_template('csv_reader.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, boton_change=boton_change, note_change=note_change, csv_reader_change=csv_reader_change )
 
 @app.route('/configuration')
 def configuration():
