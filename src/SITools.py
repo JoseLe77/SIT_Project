@@ -27,10 +27,15 @@ app.secret_key = "DHLForms|DHL2023"
 # -------------------------------------------------------------------------
 
 # ---- SQLite3 ---
-# connection = sqlite3.connect('src/db/database/DB_ITools.db')
+# connection = sqlite3.connect('../src/db/database/DB_ITools.db')
 # cursor = connection.cursor()
 # print('DB connected successfully')
 
+def dbconnection():
+  # Connects to the specified SQLite database and returns a connection and cursor.
+  connection = sqlite3.connect('../src/db/database/DB_ITools.db')
+  cursor = connection.cursor()
+  return connection, cursor
 
 def tmpl_show_menu():
     return render_template_string(
@@ -40,7 +45,7 @@ def tmpl_show_menu():
         {% endfor -%}
         '''
     )
-
+    
 
 # -------------------------------------------------------------------------
 # Routes
@@ -49,12 +54,11 @@ def tmpl_show_menu():
 def index():
     if session.get('user_logged') is None:
         # ---- Database Connection ----
-        connection = sqlite3.connect('src/db/database/DB_ITools.db')
-        cursor = connection.cursor()
+        connection, cursor = dbconnection()
         # print('DB connected successfully')
 
         # ---- Database SQL Query ----
-        webcall = open('src/db/webcalls/login/warehouses_query.sql', mode='r')
+        webcall = open('../src/db/webcalls/login/warehouses_query.sql', mode='r')
         warehouses_query = webcall.read()
         webcall.close()
         cursor.execute(warehouses_query)
@@ -81,12 +85,11 @@ def login():
         session['user'] = username
 
         # ---- Database Connection ----
-        connection = sqlite3.connect('src/db/database/DB_ITools.db')
-        cursor = connection.cursor()
+        connection, cursor = dbconnection()
         # print('DB connected successfully')
 
         # ---- Database SQL Query ----
-        webcall = open('src/db/webcalls/login/login_query.sql', mode='r')
+        webcall = open('../src/db/webcalls/login/login_query.sql', mode='r')
         login_query = webcall.read()
         webcall.close()
         login_query = login_query.format(username, warehouse)
@@ -102,7 +105,7 @@ def login():
             return redirect(url_for('index'))
         else:
             # ---- Database SQL Query ----
-            webcall = open('src/db/webcalls/login/user_query.sql', mode='r')
+            webcall = open('../src/db/webcalls/login/user_query.sql', mode='r')
             user_query = webcall.read()
             webcall.close()
             user_query = user_query.format(username, warehouse)
@@ -111,12 +114,14 @@ def login():
             print(user_result)
             session['user_logged'] = user_result[0]
             session['user_privileges'] = user_result[1]
+            session['user_id_logged'] = username
             session['warehouse_logged'] = warehouses
             user_logged = session.get('user_logged')
+            user_id_logged = session.get('user_id_logged')
             user_privileges = session.get('user_privileges')
             warehouse_logged = session.get('warehouse_logged')
-            # print(user_logged)
-            return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
+            print(user_id_logged)
+            return render_template("home.html", user_logged=f'{user_logged}', user_id_logged = user_id_logged,  warehouse_logged=warehouse_logged, user_privileges=user_privileges)
     else:
         if session.get('user_logged') is None:
             return redirect(url_for('index'))
@@ -152,11 +157,10 @@ def forms():
         warehouse = session.get('warehouse_logged').split()[0]
 
         # ---- Database Connection ----
-        connection = sqlite3.connect('src/db/database/DB_ITools.db')
-        cursor = connection.cursor()
+        connection, cursor = dbconnection()
 
         # ---- Database SQL Query ----
-        webcall = open('src/db/webcalls/forms/Active_forms_query.sql', mode='r')
+        webcall = open('../src/db/webcalls/forms/Active_forms_query.sql', mode='r')
         forms_query = webcall.read()
         webcall.close()
         forms_query = forms_query.format(warehouse)
@@ -174,16 +178,20 @@ def tools():
         return redirect(url_for('index'))
     else:
         user_logged = session.get('user_logged')
+        user_id_logged = session.get('user_id_logged')
         user_privileges = session.get('user_privileges')
         warehouse_logged = session.get('warehouse_logged')
         warehouse = session.get('warehouse_logged').split()[0]
 
         # ---- Database Connection ----
-        connection = sqlite3.connect('src/db/database/DB_ITools.db')
-        cursor = connection.cursor()
+            # connection = sqlite3.connect('../src/db/database/DB_ITools.db')
+            # cursor = connection.cursor()
+
+        # Call the db connection function
+        connection, cursor = dbconnection()
 
         # ---- Database Active tools query ----
-        webcall = open('src/db/webcalls/tools/Enabled_tools_query.sql', mode='r')
+        webcall = open('../src/db/webcalls/tools/Enabled_tools_query.sql', mode='r')
         tools_query = webcall.read()
         webcall.close()
         tools_query = tools_query.format(warehouse)
@@ -191,35 +199,80 @@ def tools():
         enabled_tools_results = cursor.fetchall()
 
         # ---- Database Active tools query ----
-        webcall = open('src/db/webcalls/tools/Enabled_tools_query.sql', mode='r')
+        webcall = open('../src/db/webcalls/tools/not_finished_tasks_query.sql', mode='r')
+        tasks_query = webcall.read()
+        webcall.close()
+        tasks_query = tasks_query.format(warehouse, user_id_logged)
+        cursor.execute(tasks_query)
+        all_tasks_results = cursor.fetchall()
+        connection.close()
+
+        boton_change = ('Done Tasks','done_tasks')
+        note_change = ('Notes','notes')
+
+        return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, all_tasks_results=all_tasks_results, boton_change=boton_change, note_change=note_change)
+
+@app.route('/done_tasks')
+def done_tasks():
+    if session.get('user_logged') is None:
+        login_error = 'Is not possible to access this way.'
+        flash(login_error)
+        return redirect(url_for('index'))
+    else:
+        user_logged = session.get('user_logged')
+        user_id_logged = session.get('user_id_logged')
+        user_privileges = session.get('user_privileges')
+        warehouse_logged = session.get('warehouse_logged')
+        warehouse = session.get('warehouse_logged').split()[0]
+
+        # ---- Database Connection ----
+            # connection = sqlite3.connect('../src/db/database/DB_ITools.db')
+            # cursor = connection.cursor()
+
+        # Call the db connection function
+        connection, cursor = dbconnection()
+
+        # ---- Database Active tools query ----
+        webcall = open('../src/db/webcalls/tools/Enabled_tools_query.sql', mode='r')
         tools_query = webcall.read()
         webcall.close()
         tools_query = tools_query.format(warehouse)
         cursor.execute(tools_query)
         enabled_tools_results = cursor.fetchall()
 
-        return render_template('tools.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results)
+        # ---- Database Active Done tools query ----
+        webcall = open('../src/db/webcalls/tools/done_tasks_query.sql', mode='r')
+        tasks_query = webcall.read()
+        webcall.close()
+        tasks_query = tasks_query.format(warehouse, user_id_logged)
+        cursor.execute(tasks_query)
+        all_tasks_results = cursor.fetchall()
+        connection.close()
+
+        boton_change = ('Task To Do', 'tools')
+        note_change = ('Notes', 'notes')
+        return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, all_tasks_results=all_tasks_results, boton_change=boton_change, note_change=note_change)
 
 
 @app.route('/new_task')
 def new_task():
     user_logged = session.get('user_logged')
     user_privileges = session.get('user_privileges')
+    user_id_logged = session.get('user_id_logged')
     warehouse_logged = session.get('warehouse_logged')
     warehouse = session.get('warehouse_logged').split()[0]
 
     # ---- Database Connection ----
-    connection = sqlite3.connect('src/db/database/DB_ITools.db')
-    cursor = connection.cursor()
+    connection, cursor = dbconnection()
 
     # ---- Database Active tools query ----
-    webcall = open('src/db/webcalls/tools/tasks_statuses_query.sql', mode='r')
+    webcall = open('../src/db/webcalls/tools/tasks_statuses_query.sql', mode='r')
     statuses_query = webcall.read()
     webcall.close()
     cursor.execute(statuses_query)
     statuses_query_results = cursor.fetchall()
 
-    return render_template('configuration/todo_add_task.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, warehouse=warehouse, statuses_query_results=statuses_query_results)
+    return render_template('configuration/todo_add_task.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, user_privileges=user_privileges, warehouse_logged=warehouse_logged, warehouse=warehouse, statuses_query_results=statuses_query_results)
 
 
 @app.route('/save_new_task', methods=["POST", "GET"])
@@ -236,6 +289,7 @@ def save_new_task():
             warehouse = request.form['wh_id']
             warehouse = warehouse.split()[0]
             usr_id = session.get('user_logged')
+            user_id_logged = session.get('user_id_logged')
             todo_nam = request.form['task_nam']
             todo_description = request.form['task_description']
             todo_comments = request.form['task_comments']
@@ -243,33 +297,367 @@ def save_new_task():
             target_dte = request.form['task_target_date']
             today = datetime.now()
             ins_dte = today.strftime('%Y-%m-%d')
-            print(warehouse, usr_id, todo_nam, todo_description, todo_comments, todo_status, target_dte, ins_dte)
+            print(warehouse, usr_id, user_id_logged, todo_nam, todo_description, todo_comments, todo_status, target_dte, ins_dte)
             # ----------------
             #    DataBase
             # ----------------
-            connection = sqlite3.connect('src/db/database/DB_ITools.db')
-            cursor = connection.cursor()
+            connection, cursor = dbconnection()
 
-            webcall = open('src/db/webcalls/tools/new_task_insert_query.sql', mode='r')
+            webcall = open('../src/db/webcalls/tools/new_task_insert_query.sql', mode='r')
             new_task_insert_query = webcall.read()
             webcall.close()
-            insert_new_task = new_task_insert_query.format(warehouse, usr_id, todo_nam, todo_description, todo_comments, todo_status, target_dte, ins_dte)
+            insert_new_task = new_task_insert_query.format(warehouse, user_id_logged, todo_nam, todo_description, todo_comments, todo_status, target_dte, ins_dte)
             print("task {} Created".format(todo_nam))
             cursor.execute(insert_new_task)
             connection.commit()
             connection.close()
 
-        # ----------------
-        #    Login Data
-        # ----------------
-        user_logged = session.get('user_logged')
-        user_privileges = session.get('user_privileges')
-        warehouse_logged = session.get('warehouse_logged')
-        warehouse = session.get('warehouse_logged').split()[0]
+            # ----------------
+            #    Login Data
+            # ----------------
+            user_logged = session.get('user_logged')
+            user_privileges = session.get('user_privileges')
+            user_id_logged = session.get('user_id_logged')
+            warehouse_logged = session.get('warehouse_logged')
+            warehouse = session.get('warehouse_logged').split()[0]
+
+            connection, cursor = dbconnection()
+
+            # ---- Database Active tools query ----
+            webcall = open('../src/db/webcalls/tools/Enabled_tools_query.sql', mode='r')
+            tools_query = webcall.read()
+            webcall.close()
+            tools_query = tools_query.format(warehouse)
+            cursor.execute(tools_query)
+            enabled_tools_results = cursor.fetchall()
+
+            # ---- Database Active tools query ----
+            webcall = open('../src/db/webcalls/tools/not_finished_tasks_query.sql', mode='r')
+            tasks_query = webcall.read()
+            webcall.close()
+            tasks_query = tasks_query.format(warehouse, user_id_logged)
+            cursor.execute(tasks_query)
+            all_tasks_results = cursor.fetchall()
+            connection.close()
+
+            boton_change = ('Done Tasks', 'done_tasks')
+            note_change = ('Notes', 'notes')
+
         if session.get('user_privileges') == 'R':
             return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
         else:
-            return render_template('tools.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse)
+            return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, all_tasks_results=all_tasks_results, boton_change=boton_change, note_change=note_change)
+
+@app.route('/edit_task/<string:id>')
+def edit_task(id):
+    # ----------------
+    #    Login Data
+    # ----------------
+    user_logged = session.get('user_logged')
+    user_privileges = session.get('user_privileges')
+    user_id_logged = session.get('user_id_logged')
+    warehouse_logged = session.get('warehouse_logged')
+    warehouse = session.get('warehouse_logged').split()[0]
+
+    # ----------------
+    #    DataBase
+    # ----------------
+    connection, cursor = dbconnection()
+    
+    webcall = open('../src/db/webcalls/tools/data_2_edit_tasks_query.sql', mode='r')
+    edit_task_query = webcall.read()
+    webcall.close()
+    edit_task_query = edit_task_query.format(id, warehouse)
+    cursor.execute(edit_task_query)
+    data2edit = cursor.fetchall()
+    stats = data2edit[0][4]
+
+
+    #all statuses
+    webcall = open('db/webcalls/tools/data_2_edit_task_statuses_query.sql', mode='r')
+    edit_task_statuses_query = webcall.read()
+    webcall.close()
+    edit_task_statuses_query = edit_task_statuses_query.format(data2edit[0][4], data2edit[0][4])
+    cursor.execute(edit_task_statuses_query)
+    data2select = cursor.fetchall()
+
+    # all tasks
+    webcall = open('db/webcalls/tools/done_tasks_query.sql', mode='r')
+    tasks_query = webcall.read()
+    webcall.close()
+    tasks_query = tasks_query.format(warehouse, user_id_logged, warehouse, user_id_logged)
+    cursor.execute(tasks_query)
+    all_tasks_results = cursor.fetchall()
+    if session.get('user_privileges') == 'R':
+        return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
+    else:
+        return render_template('configuration/todo_edit_task.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse, data2edit=data2edit, data2select=data2select, all_tasks_results=all_tasks_results)
+
+
+@app.route('/update_task/<task_id>', methods=['POST'])
+def update_task(task_id):
+    if request.method == 'POST':
+        warehouse = request.form['wh_id']
+        warehouse = warehouse.split()[0]
+        usr_id = session.get('user_logged')
+        user_id_logged = session.get('user_id_logged')
+        todo_nam = request.form['task_nam']
+        todo_description = request.form['task_description']
+        todo_comments = request.form['task_comments']
+        todo_status = request.form['task_status']
+        target_dte = request.form['task_target_date']
+        today = datetime.now()
+        if todo_status == 'D':
+            cls_dte = today.strftime('%Y-%m-%d')
+        else:
+            cls_dte = ''
+        print(warehouse, usr_id, user_id_logged, todo_nam, todo_description, todo_comments, todo_status, target_dte, cls_dte, task_id)
+
+        # ----------------
+        #    DataBase
+        # ----------------
+        connection, cursor = dbconnection()
+        # print('DB connected successfully - update')
+
+        webcall = open('../src/db/webcalls/tools/update_selected_task_query.sql', mode='r')
+        update_task_query = webcall.read()
+        webcall.close()
+        update_task_query = update_task_query.format(warehouse, user_id_logged, todo_nam, todo_description, todo_comments, todo_status, target_dte, cls_dte, task_id, warehouse)
+        print(update_task_query)
+        cursor.execute(update_task_query)
+        connection.commit()
+        connection.close()
+
+        # all tasks
+        connection, cursor = dbconnection()
+        webcall = open('db/webcalls/tools/not_finished_tasks_query.sql', mode='r')
+        tasks_query = webcall.read()
+        webcall.close()
+        tasks_query = tasks_query.format(warehouse, user_id_logged, warehouse, user_id_logged)
+        cursor.execute(tasks_query)
+        all_tasks_results = cursor.fetchall()
+        connection.close()
+
+        print("Task {} Modified".format(task_id))
+        return redirect(url_for('tools'))
+
+@app.route('/notes')
+def notes():
+    if session.get('user_logged') is None:
+        login_error = 'Is not possible to access this way.'
+        flash(login_error)
+        return redirect(url_for('index'))
+    else:
+        user_logged = session.get('user_logged')
+        user_id_logged = session.get('user_id_logged')
+        user_privileges = session.get('user_privileges')
+        warehouse_logged = session.get('warehouse_logged')
+        warehouse = session.get('warehouse_logged').split()[0]
+
+        # ---- Database Connection ----
+            # connection = sqlite3.connect('../src/db/database/DB_ITools.db')
+            # cursor = connection.cursor()
+
+        # Call the db connection function
+        connection, cursor = dbconnection()
+
+        # ---- Database Active tools query ----
+        webcall = open('../src/db/webcalls/tools/Enabled_tools_query.sql', mode='r')
+        tools_query = webcall.read()
+        webcall.close()
+        tools_query = tools_query.format(warehouse)
+        cursor.execute(tools_query)
+        enabled_tools_results = cursor.fetchall()
+
+        # ---- Database Active tools query ----
+        webcall = open('../src/db/webcalls/tools/Active_notes_query.sql', mode='r')
+        notes_query = webcall.read()
+        webcall.close()
+        notes_query = notes_query.format(warehouse, user_id_logged)
+        cursor.execute(notes_query)
+        Active_notes_query = cursor.fetchall()
+        connection.close()
+
+        boton_change = ('Task To Do', 'tools')
+        note_change = ('New Note', 'new_note')
+
+        return render_template('notes.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, Active_notes_query=Active_notes_query, boton_change=boton_change, note_change=note_change)
+
+
+@app.route('/new_note')
+def new_note():
+    user_logged = session.get('user_logged')
+    user_privileges = session.get('user_privileges')
+    user_id_logged = session.get('user_id_logged')
+    warehouse_logged = session.get('warehouse_logged')
+    warehouse = session.get('warehouse_logged').split()[0]
+
+    return render_template('configuration/add_new_note.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, user_privileges=user_privileges, warehouse_logged=warehouse_logged, warehouse=warehouse)
+
+@app.route('/save_new_note', methods=["POST", "GET"])
+def save_new_note():
+    if session.get('user_logged') is None:
+        login_error = 'Is not possible to access without an user.'
+        flash(login_error)
+        return redirect(url_for('index'))
+    else:
+        if request.method == 'POST':
+            # ----------------
+            #    HTML Form
+            # ----------------
+            warehouse = request.form['wh_id']
+            warehouse = warehouse.split()[0]
+            usr_id = session.get('user_logged')
+            user_id_logged = session.get('user_id_logged')
+            note_title = request.form['note_title']
+            note_description = request.form['note_description']
+            print(warehouse, usr_id, user_id_logged, note_title, note_description)
+            # ----------------
+            #    DataBase
+            # ----------------
+            connection, cursor = dbconnection()
+
+            webcall = open('../src/db/webcalls/tools/new_note_insert_query.sql', mode='r')
+            new_note_insert_query = webcall.read()
+            webcall.close()
+            insert_new_note = new_note_insert_query.format(warehouse, user_id_logged, note_title, note_description)
+            print("task {} Created".format(note_title))
+            cursor.execute(insert_new_note)
+            connection.commit()
+            connection.close()
+
+            # ----------------
+            #    Login Data
+            # ----------------
+            user_logged = session.get('user_logged')
+            user_privileges = session.get('user_privileges')
+            user_id_logged = session.get('user_id_logged')
+            warehouse_logged = session.get('warehouse_logged')
+            warehouse = session.get('warehouse_logged').split()[0]
+
+            connection, cursor = dbconnection()
+
+            # ---- Database Active tools query ----
+            webcall = open('db/webcalls/tools/Active_notes_query.sql', mode='r')
+            notes_query = webcall.read()
+            webcall.close()
+            notes_query = notes_query.format(warehouse, user_id_logged)
+            cursor.execute(notes_query)
+            Active_notes_query = cursor.fetchall()
+            connection.close()
+
+            boton_change = ('Task To Do', 'tools')
+            note_change = ('New Note', 'new_note')
+
+        if session.get('user_privileges') == 'R':
+            return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
+        else:
+            return render_template('notes.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse, Active_notes_query=Active_notes_query, note_change=note_change, boton_change=boton_change )
+
+
+@app.route('/edit_note/<string:id>')
+def edit_note(id):
+    # ----------------
+    #    Login Data
+    # ----------------
+    user_logged = session.get('user_logged')
+    user_privileges = session.get('user_privileges')
+    user_id_logged = session.get('user_id_logged')
+    warehouse_logged = session.get('warehouse_logged')
+    warehouse = session.get('warehouse_logged').split()[0]
+
+    # ----------------
+    #    DataBase
+    # ----------------
+    connection, cursor = dbconnection()
+
+    webcall = open('../src/db/webcalls/tools/data_2_edit_note_query.sql', mode='r')
+    edit_note_query = webcall.read()
+    webcall.close()
+    edit_note_query = edit_note_query.format(id, user_id_logged, warehouse)
+    cursor.execute(edit_note_query)
+    data2edit = cursor.fetchall()
+
+    if session.get('user_privileges') == 'R':
+        return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged,
+                               user_privileges=user_privileges)
+    else:
+        return render_template('configuration/tools_edit_note.html', user_logged=f'{user_logged}',
+                               warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse,
+                               user_id_logged=user_id_logged, data2edit=data2edit)
+
+
+@app.route('/update_note/<note_id>', methods=["POST", "GET"])
+def update_note(note_id):
+    print(request.form)
+    if session.get('user_logged') is None:
+        login_error = 'Is not possible to access without an user.'
+        flash(login_error)
+        return redirect(url_for('index'))
+    else:
+        if request.method == 'POST':
+            warehouse = request.form['wh_id']
+            warehouse = warehouse.split()[0]
+            usr_id = session.get('user_logged')
+            user_id_logged = session.get('user_id_logged')
+            note_title = request.form['note_title']
+            note_description = request.form['note_description']
+            print(warehouse, usr_id, user_id_logged, note_title, note_description, note_id)
+            print(request.form)
+
+            # ----------------
+            #    DataBase
+            # ----------------
+            connection, cursor = dbconnection()
+            # print('DB connected successfully - update')
+
+            webcall = open('../src/db/webcalls/tools/update_selected_note_query.sql', mode='r')
+            update_note_query = webcall.read()
+            webcall.close()
+            update_note_query = update_note_query.format(note_title, note_description, note_id, warehouse, user_id_logged)
+            print(update_note_query)
+            cursor.execute(update_note_query)
+            connection.commit()
+            connection.close()
+
+            print("Note {} Modified".format(note_id))
+            return redirect(url_for('notes'))
+
+
+
+
+@app.route('/delete_note/<note_id>')
+def delete_note(note_id):
+    if session.get('user_logged') is None:
+        login_error = 'Is not possible to access without an user.'
+        flash(login_error)
+        return redirect(url_for('index'))
+    else:
+        user_logged = session.get('user_logged')
+        user_privileges = session.get('user_privileges')
+        user_id_logged = session.get('user_id_logged')
+        warehouse_logged = session.get('warehouse_logged')
+        warehouse = session.get('warehouse_logged').split()[0]
+        print(warehouse, user_id_logged, note_id)
+        print(request.form)
+
+        # ----------------
+        #    DataBase
+        # ----------------
+        connection, cursor = dbconnection()
+        # print('DB connected successfully - delete')
+
+        webcall = open('../src/db/webcalls/tools/delete_selected_note_query.sql', mode='r')
+        delete_note_query = webcall.read()
+        webcall.close()
+        delete_note_query = delete_note_query.format(note_id, warehouse, user_id_logged)
+        print(delete_note_query)
+        cursor.execute(delete_note_query)
+        connection.commit()
+        connection.close()
+
+        print("Note {} Deleted".format(id))
+        return redirect(url_for('notes'))
 
 
 @app.route('/configuration')
@@ -286,7 +674,6 @@ def configuration():
             return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
         else:
             return render_template('configuration.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
-
 
 @app.route('/logout')
 def logout():
@@ -311,12 +698,11 @@ def configuration_home():
         warehouse = session.get('warehouse_logged').split()[0]
 
         # ---- Database Connection ----
-        connection = sqlite3.connect('src/db/database/DB_ITools.db')
-        cursor = connection.cursor()
+        connection, cursor = dbconnection()
 
         # ---- Database Users by Role query ----
 
-        webcall = open('src/db/webcalls/summary/users_by_role_summary.sql', mode='r')
+        webcall = open('../src/db/webcalls/summary/users_by_role_summary.sql', mode='r')
         wh_users_role_query = webcall.read()
         webcall.close()
         wh_users_role_query = wh_users_role_query.format(warehouse, warehouse)
@@ -324,7 +710,7 @@ def configuration_home():
         wh_role_users_results = cursor.fetchall()
 
         # ---- Database Users by Hierarchy query ----
-        webcall = open('src/db/webcalls/summary/users_by_hierarchy_summary.sql', mode='r')
+        webcall = open('../src/db/webcalls/summary/users_by_hierarchy_summary.sql', mode='r')
         wh_users_hierarchy_query = webcall.read()
         webcall.close()
         wh_users_hierarchy_query = wh_users_hierarchy_query.format(warehouse, warehouse)
@@ -332,7 +718,7 @@ def configuration_home():
         wh_hierarchy_users_results = cursor.fetchall()
 
         # ---- Database Summary query ----
-        webcall = open('src/db/webcalls/summary/summary.sql', mode='r')
+        webcall = open('../src/db/webcalls/summary/summary.sql', mode='r')
         wh_summary_query = webcall.read()
         webcall.close()
         wh_summary_query = wh_summary_query.format(warehouse, warehouse, warehouse)
@@ -374,11 +760,10 @@ def forms_config():
         warehouse = session.get('warehouse_logged').split()[0]
 
         # ---- Database Connection ----
-        connection = sqlite3.connect('src/db/database/DB_ITools.db')
-        cursor = connection.cursor()
+        connection, cursor = dbconnection()
 
         # ---- Database Active forms query ----
-        webcall = open('src/db/webcalls/forms/All_forms_query.sql', mode='r')
+        webcall = open('../src/db/webcalls/forms/All_forms_query.sql', mode='r')
         forms_query = webcall.read()
         webcall.close()
         forms_query = forms_query.format(warehouse)
@@ -415,9 +800,9 @@ def forms_configuration():
             # ----------------
             #    DataBase
             # ----------------
-            connection = sqlite3.connect('src/db/database/DB_ITools.db')
-            cursor = connection.cursor()
-            webcall = open('src/db/webcalls/forms/new_form_query.sql', mode='r')
+            connection, cursor = dbconnection()
+            
+            webcall = open('../src/db/webcalls/forms/new_form_query.sql', mode='r')
             new_form_query = webcall.read()
             webcall.close()
             new_form = new_form_query.format(warehouse, form_name, form_contact, telephone, form_id, description, form_url, form_toolkit)
@@ -452,16 +837,16 @@ def edit_forms(id):
     # ----------------
     #    DataBase
     # ----------------
-    connection = sqlite3.connect('src/db/database/DB_ITools.db')
-    cursor = connection.cursor()
-    webcall = open('src/db/webcalls/forms/data_2_edit_forms_query.sql', mode='r')
+    connection, cursor = dbconnection()
+    
+    webcall = open('../src/db/webcalls/forms/data_2_edit_forms_query.sql', mode='r')
     edit_form_query = webcall.read()
     webcall.close()
     edit_form_query = edit_form_query.format(id, warehouse)
     cursor.execute(edit_form_query)
     data2edit = cursor.fetchall()
     # all forms
-    webcall = open('src/db/webcalls/forms/All_forms_query.sql', mode='r')
+    webcall = open('../src/db/webcalls/forms/All_forms_query.sql', mode='r')
     forms_query = webcall.read()
     webcall.close()
     forms_query = forms_query.format(warehouse)
@@ -491,10 +876,10 @@ def update_form(form_id):
             form_status = 0
             # print(warehouse, form_name, form_contact, telephone, form_id, description, form_url, form_toolkit, form_status)
 
-        connection = sqlite3.connect('src/db/database/DB_ITools.db')
-        cursor = connection.cursor()
+        connection, cursor = dbconnection()
+        
         # print('DB connected successfully - update')
-        webcall = open('src/db/webcalls/forms/update_selected_form_query.sql', mode='r')
+        webcall = open('../src/db/webcalls/forms/update_selected_form_query.sql', mode='r')
         update_form_query = webcall.read()
         webcall.close()
         update_form_query = update_form_query.format(form_name, form_contact, telephone, form_id, description, form_url, form_toolkit, form_status, warehouse, form_id, warehouse)
@@ -519,11 +904,10 @@ def tools_config():
         warehouse = session.get('warehouse_logged').split()[0]
 
         # ---- Database Connection ----
-        connection = sqlite3.connect('src/db/database/DB_ITools.db')
-        cursor = connection.cursor()
+        connection, cursor = dbconnection()
 
         # ---- Database Active forms query ----
-        webcall = open('src/db/webcalls/tools/All_tools_query.sql', mode='r')
+        webcall = open('../src/db/webcalls/tools/All_tools_query.sql', mode='r')
         tools_query = webcall.read()
         webcall.close()
         tools_query = tools_query.format(warehouse)
@@ -554,9 +938,9 @@ def tools_configuration():
             # ----------------
             #    DataBase
             # ----------------
-            connection = sqlite3.connect('src/db/database/DB_ITools.db')
-            cursor = connection.cursor()
-            webcall = open('src/db/webcalls/tools/new_tool_button_query.sql', mode='r')
+            connection, cursor = dbconnection()
+            
+            webcall = open('../src/db/webcalls/tools/new_tool_button_query.sql', mode='r')
             new_tool_button_query = webcall.read()
             webcall.close()
             new_button = new_tool_button_query.format(warehouse, tool_name, tool_url, warehouse)
@@ -573,11 +957,11 @@ def tools_configuration():
     user_privileges = session.get('user_privileges')
     warehouse_logged = session.get('warehouse_logged')
     # ---- Database Connection ----
-    connection = sqlite3.connect('src/db/database/DB_ITools.db')
+    connection = sqlite3.connect('../src/db/database/DB_ITools.db')
     cursor = connection.cursor()
 
     # ---- Database Active forms query ----
-    webcall = open('src/db/webcalls/tools/All_tools_query.sql', mode='r')
+    webcall = open('../src/db/webcalls/tools/All_tools_query.sql', mode='r')
     tools_query = webcall.read()
     webcall.close()
     tools_query = tools_query.format(warehouse)
@@ -602,16 +986,16 @@ def edit_tools(id):
     # ----------------
     #    DataBase
     # ----------------
-    connection = sqlite3.connect('src/db/database/DB_ITools.db')
-    cursor = connection.cursor()
-    webcall = open('src/db/webcalls/tools/data_2_edit_tools_query.sql', mode='r')
+    connection, cursor = dbconnection()
+    
+    webcall = open('../src/db/webcalls/tools/data_2_edit_tools_query.sql', mode='r')
     edit_tools_query = webcall.read()
     webcall.close()
     edit_tools_query = edit_tools_query.format(id, warehouse)
     cursor.execute(edit_tools_query)
     data2edit = cursor.fetchall()
     # all forms
-    webcall = open('src/db/webcalls/tools/All_tools_query.sql', mode='r')
+    webcall = open('../src/db/webcalls/tools/All_tools_query.sql', mode='r')
     tools_query = webcall.read()
     webcall.close()
     tools_query = tools_query.format(warehouse)
@@ -636,10 +1020,13 @@ def update_tool(tool_num):
         else:
             tool_active = 0
 
-        connection = sqlite3.connect('src/db/database/DB_ITools.db')
-        cursor = connection.cursor()
+        # ----------------
+        #    DataBase
+        # ----------------
+        connection, cursor = dbconnection()
+        
         # print('DB connected successfully - update')
-        webcall = open('src/db/webcalls/tools/update_selected_tool_query.sql', mode='r')
+        webcall = open('../src/db/webcalls/tools/update_selected_tool_query.sql', mode='r')
         update_tool_query = webcall.read()
         webcall.close()
         update_tool_query = update_tool_query.format(tool_num, tool_name, tool_url, tool_active, warehouse, tool_num, warehouse)
@@ -663,11 +1050,10 @@ def users_config():
         warehouse = session.get('warehouse_logged').split()[0]
 
         # ---- Database Connection ----
-        connection = sqlite3.connect('src/db/database/DB_ITools.db')
-        cursor = connection.cursor()
+        connection, cursor = dbconnection()
 
         # ---- Database Active forms query ----
-        webcall = open('src/db/webcalls/users/All_users_query.sql', mode='r')
+        webcall = open('../src/db/webcalls/users/All_users_query.sql', mode='r')
         users_query = webcall.read()
         webcall.close()
         users_query = users_query.format(warehouse)
@@ -675,7 +1061,7 @@ def users_config():
         all_users_results = cursor.fetchall()
 
         # hierarchies
-        webcall = open('src/db/webcalls/users/get_all_hiearchies.sql', mode='r')
+        webcall = open('../src/db/webcalls/users/get_all_hiearchies.sql', mode='r')
         get_hierarchies = webcall.read()
         webcall.close()
         cursor.execute(get_hierarchies)
@@ -683,7 +1069,7 @@ def users_config():
         print(hierarchies_to_select)
 
         # roles (privileges)
-        webcall = open('src/db/webcalls/users/get_all_roles.sql', mode='r')
+        webcall = open('../src/db/webcalls/users/get_all_roles.sql', mode='r')
         get_roles = webcall.read()
         webcall.close()
         cursor.execute(get_roles)
@@ -718,9 +1104,9 @@ def users_configuration():
             # ----------------
             #    DataBase
             # ----------------
-            connection = sqlite3.connect('src/db/database/DB_ITools.db')
-            cursor = connection.cursor()
-            webcall = open('src/db/webcalls/users/new_user_query.sql', mode='r')
+            connection, cursor = dbconnection()
+
+            webcall = open('../src/db/webcalls/users/new_user_query.sql', mode='r')
             new_user_query = webcall.read()
             webcall.close()
             new_user = new_user_query.format(usr_id, usr_nam, usr_surnam, warehouse, hie_nam, pri_nam)
@@ -738,11 +1124,11 @@ def users_configuration():
     warehouse_logged = session.get('warehouse_logged')
 
     # ---- Database Connection ----
-    connection = sqlite3.connect('src/db/database/DB_ITools.db')
+    connection = sqlite3.connect('../src/db/database/DB_ITools.db')
     cursor = connection.cursor()
 
     # ---- Database Active users query ----
-    webcall = open('src/db/webcalls/users/All_users_query.sql', mode='r')
+    webcall = open('../src/db/webcalls/users/All_users_query.sql', mode='r')
     users_query = webcall.read()
     webcall.close()
     users_query = users_query.format(warehouse)
@@ -767,9 +1153,9 @@ def edit_users(id):
     # ----------------
     #    DataBase
     # ----------------
-    connection = sqlite3.connect('src/db/database/DB_ITools.db')
-    cursor = connection.cursor()
-    webcall = open('src/db/webcalls/users/data_2_edit_user_query.sql', mode='r')
+    connection, cursor = dbconnection()
+
+    webcall = open('../src/db/webcalls/users/data_2_edit_user_query.sql', mode='r')
     edit_users_query = webcall.read()
     webcall.close()
     edit_users_query = edit_users_query.format(id, warehouse)
@@ -777,7 +1163,7 @@ def edit_users(id):
     data2edit = cursor.fetchall()
 
     #hierarchies
-    webcall = open('src/db/webcalls/users/get_hiearchies_per_user_update.sql', mode='r')
+    webcall = open('../src/db/webcalls/users/get_hiearchies_per_user_update.sql', mode='r')
     get_hierarchies = webcall.read()
     webcall.close()
     get_hierarchies = get_hierarchies.format(id, warehouse, id, warehouse)
@@ -785,7 +1171,7 @@ def edit_users(id):
     hierarchies_to_update = cursor.fetchall()
 
     # roles (privileges)
-    webcall = open('src/db/webcalls/users/get_role_per_user_update.sql', mode='r')
+    webcall = open('../src/db/webcalls/users/get_role_per_user_update.sql', mode='r')
     get_role = webcall.read()
     webcall.close()
     get_role = get_role.format(id, warehouse, id, warehouse)
@@ -793,7 +1179,7 @@ def edit_users(id):
     role_to_update = cursor.fetchall()
 
     # all forms
-    webcall = open('src/db/webcalls/users/All_users_query.sql', mode='r')
+    webcall = open('../src/db/webcalls/users/All_users_query.sql', mode='r')
     users_query = webcall.read()
     webcall.close()
     users_query = users_query.format(warehouse)
@@ -811,6 +1197,7 @@ def update_user(usr_id):
         warehouse = warehouse.split()[0]
         user_id = request.form['usr_id']
         usr_name = request.form['usr_nam']
+        usr_name = request.form['usr_nam']
         usr_surname = request.form['usr_surnam']
         hie_name = request.form['hie_id']
         pri_name = request.form['pri_id']
@@ -821,10 +1208,14 @@ def update_user(usr_id):
 
         check = request.form['status']
         print(check)
-        connection = sqlite3.connect('src/db/database/DB_ITools.db')
-        cursor = connection.cursor()
+
+        # ----------------
+        #    DataBase
+        # ----------------
+        connection, cursor = dbconnection()
+
         # print('DB connected successfully - update')
-        webcall = open('src/db/webcalls/users/update_selected_user_query.sql', mode='r')
+        webcall = open('../src/db/webcalls/users/update_selected_user_query.sql', mode='r')
         update_user_query = webcall.read()
         webcall.close()
         update_user_query = update_user_query.format(user_id, usr_name, usr_surname, warehouse, hie_name, pri_name, usr_active, user_id, warehouse)
