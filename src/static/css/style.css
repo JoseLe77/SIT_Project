@@ -150,23 +150,38 @@
     height:100px;
 }
 
+/* -- CSV READER styles (start) --*/
 .subirArchivo{
     width: 100%;
     display: flex;
     justify-content: space-between;
+    align-items: center;
     padding: 10px;
-    border-bottom: 2px solid #000;
+    /* border-bottom: 2px solid #000; */
     background:var(--color-amarillo) ;
 }
 
 .visualizarArchivo{
-
     display:flex;
     justify-content: space-around;
 }
 
+.imprimirArchivo{
+    padding-left: 20px;
+    display:flex;
+    justify-self: flex-end;
+}
+
+.imprimirArchivo a:hover{
+    text-decoration: none;
+    background:var(--color-primario);
+    /*-- border: 1px solid #000;
+     box-shadow: 2px 3px 5px #000; --*/
+}
+
 .tabla_csv{
     margin-top: 10px;
+    width:100%;
 }
 
 .tabla_csv tr:nth-child(1){
@@ -190,39 +205,37 @@
     background-color: var(--color-secundario-accion);
     color:#fff;
 }
+/* -- CSV READER styles (end) --*/
 
-
-.imprimirArchivo{
-    padding-left: 20px;
-    justify-self: flex-end;
+.barcode_article{
+    display:flex;
+    flex-direction:row;
+    justify_content: space-around;
 }
 
-.imprimirArchivo a{
-    text-decoration: none;
-    background:var(--color-secundario);
-    border: 1px solid #000;
-    box-shadow: 2px 3px 5px #000;
+.barcode_input{
+    display:flex;
+    flex-direction:column;
+    justify_content: space-between;
+    width:100%;
 }
 
-.imprimirArchivo a:hover{
-    text-decoration: none;
-    background:var(--color-secundario-accion);
+.barcode_article_inputs{
+    display:flex;
+    align-content:center;
+    width:100%;
+
 }
 
-.imprimirArchivo button{
-    text-decoration: none;
-    background:var(--color-primario);
-    border: 1px solid #000;
-    box-shadow: 2px 3px 5px #000;
-    color:#000;
-    margin-left: 20px;
+#ean, #producto{
+    line-height:2.5;
 }
 
-.imprimirArchivo button:hover{
-    text-decoration: none;
-    background:var(--color-primario-accion);
-    color:#000;
-}
+.barcode_generated{
+    display:flex;
+    flex-direction:column;
+    justify-content: space-around;
+    }
 
 /*Tamaño Movil*/
 @media screen and (max-width:1024px){

@@ -30,12 +30,11 @@
             <div class="tools_tools">
                 <a href="{{url_for(boton_change.1)}}" class="boton no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">{{boton_change.0}}</a>
                 <a href="{{url_for(note_change.1)}}" class="boton  no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">{{note_change.0}}</a>
-                <a href="#" class="boton  no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">Barcodes</a>
+                <a href="{{url_for(barcode_generator_change.1)}}" class="boton  no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">{{barcode_generator_change.0}}</a>
             </div>
         </article>
         <article class="card no-margen-superior">
              <section class="subirArchivo">
-                <hr>
                 <div>
                     Selecciona archivo:
                     <input type="file">
@@ -44,7 +43,6 @@
                     <a href="/csv_reader" class="boton">Limpiar</a>
                     <!-- <button class="boton" id="btnImprimirDiv" onclick="printHTML()">Imprimir</button> -->
                 </div>
-                <hr>
             </section>
             <section class="visualizarArchivo">
                 <table class="tabla tabla_csv"></table>
