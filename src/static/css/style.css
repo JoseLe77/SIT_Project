@@ -49,17 +49,22 @@
     outline:    none;
 }
 
-.S{
-    display: block;
-}
-
-.E{
+.A, .S, .E{
     display: block;
 }
 
 .R{
     display: none;
 }
+
+#no_admin:not(.A) {
+  display: none;
+}
+
+#no_super:not(.A,.S) {
+  display: none;
+}
+
 
 .menu a:hover,
 .menu a:active{
