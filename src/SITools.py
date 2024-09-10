@@ -814,10 +814,22 @@ def warehouse_configuration():
         user_logged = session.get('user_logged')
         user_privileges = session.get('user_privileges')
         warehouse_logged = session.get('warehouse_logged')
+
+        # ---- Database Connection ----
+        connection, cursor = dbconnection()
+
+        # ---- Database Users by Role query ----
+
+        webcall = open('../src/db/webcalls/warehouse/all_warehouse.sql', mode='r')
+        wh_query = webcall.read()
+        webcall.close()
+        cursor.execute(wh_query)
+        wh_query_results = cursor.fetchall()
+
         if session.get('user_privileges') == 'R' or session.get('user_privileges') == 'E' or session.get('user_privileges') == 'S':
             return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
         else:
-            return render_template('configuration/warehouse_configuration.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
+            return render_template('configuration/warehouse_configuration.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, wh_query_results=wh_query_results)
 
 
 @app.route('/forms_config')

@@ -9,5 +9,29 @@
             {{warehouse_logged}}
         </h2>
     </header>
+     <section class="card span-2 scroll-vertical">
+         <table class="tabla" id="tabla" >
+            <thead class="tabla-encabezado-fijo">
+                <tr>
+                    <th class="texto-centrado">WAREHOUSE</th>
+                    <th class="texto-centrado">NAME</th>
+                    <th class="texto-centrado">STATUS</th>
+                    <th class="texto-centrado">ACTION</th>
+                </tr>
+            </thead>
+            <tbody class="tabla_con_encabezado">
+                {% for wh in wh_query_results %}
+                    <tr>
+                        <td style="text-align:center; font-weight:bold; text-transform: uppercase; color: var(--color-primario)">{{ wh.1 }}</td>
+                        <td style="text-align:center; color: var(--color-primario)">{{ wh.2 }}</td>
+                        <td class="{{ wh.3 }}" style="font-weight:bold; text-align:center; color: var(--color-primario)">{{ wh.3 }}</td>
+                        <td class="texto-centrado">
+                            <a href="/edit_wh/{{ wh.0 }}" class="boton verde">Edit</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </section>
 </main>
 {% endblock %}
