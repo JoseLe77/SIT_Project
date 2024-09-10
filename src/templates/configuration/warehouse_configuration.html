@@ -4,34 +4,46 @@
 {% block configuration %}
 <main class="contenedor-ancho">
     <p>WAREHOUSE CONFIGURATION</p>
-    <header class="wh_header card">
-        <h2>
-            {{warehouse_logged}}
-        </h2>
-    </header>
-     <section class="card span-2 scroll-vertical">
-         <table class="tabla" id="tabla" >
-            <thead class="tabla-encabezado-fijo">
-                <tr>
-                    <th class="texto-centrado">WAREHOUSE</th>
-                    <th class="texto-centrado">NAME</th>
-                    <th class="texto-centrado">STATUS</th>
-                    <th class="texto-centrado">ACTION</th>
-                </tr>
-            </thead>
-            <tbody class="tabla_con_encabezado">
-                {% for wh in wh_query_results %}
+    <section class="contenedor-ancho grid col-3 med-col-2 peq-col-1">
+        <article class="card">
+            <h2 class="display-4 texto-derecha no-margen" style="color:var(--color-rojo); font-weight:bold;">NEW WAREHOUSE</h2>
+            <form action="/new_warehouse" method="POST" class="main-section_form ">
+                <label for="wh_id" style="font-weight:bold;">Warehouse ID</label>
+                <input type="text" class="form-control input" id="wh_id" name="wh_id" placeholder="Warehouse_ID">
+                <label for="wh_nam" style="font-weight:bold;">Warehouse Name</label>
+                <input type="text" class="form-control input" id="wh_nam" name="wh_nam" placeholder="Warehouse_Name">
+                <label for="wh_sts" style="font-weight:bold;">Warehouse Status</label>
+                <select class="form-control input" id="wh_sts" name="wh_sts" placeholder="Warehouse Status">
+                    <option name="enabled" value="1">Enabled</option>
+                    <option name="disabled" value="0">Disabled</option>
+                </select>
+                <button class="boton" type="submit">Save</button>
+            </form>
+        </article>
+         <article class="card span-2 scroll-vertical">
+             <table class="tabla" id="tabla" >
+                <thead class="tabla-encabezado-fijo">
                     <tr>
-                        <td style="text-align:center; font-weight:bold; text-transform: uppercase; color: var(--color-primario)">{{ wh.1 }}</td>
-                        <td style="text-align:center; color: var(--color-primario)">{{ wh.2 }}</td>
-                        <td class="{{ wh.3 }}" style="font-weight:bold; text-align:center; color: var(--color-primario)">{{ wh.3 }}</td>
-                        <td class="texto-centrado">
-                            <a href="/edit_wh/{{ wh.0 }}" class="boton verde">Edit</a>
-                        </td>
+                        <th class="texto-centrado">WAREHOUSE</th>
+                        <th class="texto-centrado">NAME</th>
+                        <th class="texto-centrado">STATUS</th>
+                        <th class="texto-centrado">ACTION</th>
                     </tr>
-                {% endfor %}
-            </tbody>
-        </table>
+                </thead>
+                <tbody class="tabla_con_encabezado">
+                    {% for wh in wh_query_results %}
+                        <tr>
+                            <td style="text-align:center; font-weight:bold; text-transform: uppercase; color: var(--color-primario)">{{ wh.1 }}</td>
+                            <td style="text-align:center; color: var(--color-primario)">{{ wh.2 }}</td>
+                            <td class="{{ wh.3 }}" style="font-weight:bold; text-align:center; color: var(--color-primario)">{{ wh.3 }}</td>
+                            <td class="texto-centrado">
+                                <a href="/edit_wh/{{ wh.0 }}" class="boton verde">Edit</a>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </article>
     </section>
 </main>
 {% endblock %}

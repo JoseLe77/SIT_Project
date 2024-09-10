@@ -1,0 +1,1 @@
+SELECT wh_num ,wh_id, wh_nam, CASE WHEN wh_active = 1 THEN 'Enabled' ELSE 'Disabled' END wh_acive FROM warehouses w WHERE wh_num = {}

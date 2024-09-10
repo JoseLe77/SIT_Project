@@ -832,6 +832,104 @@ def warehouse_configuration():
             return render_template('configuration/warehouse_configuration.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, wh_query_results=wh_query_results)
 
 
+@app.route('/new_warehouse', methods=["POST", "GET"])
+def new_warehouse():
+    if session.get('user_logged') is None:
+        login_error = 'Is not possible to access without an user.'
+        flash(login_error)
+        return redirect(url_for('index'))
+    else:
+        if request.method == 'POST':
+            # ----------------
+            #    HTML Form
+            # ----------------
+            warehouse = request.form['wh_id']
+            warehouse_name = request.form['wh_nam']
+            warehouse_sts = int(request.form['wh_sts'])
+
+
+            print(warehouse, warehouse_name, warehouse_sts)
+            # ----------------
+            #    DataBase
+            # ----------------
+            connection, cursor = dbconnection()
+
+            webcall = open('../src/db/webcalls/warehouse/new_warehouse_insert_query.sql', mode='r')
+            new_warehouse_query = webcall.read()
+            webcall.close()
+            new_warehouse = new_warehouse_query.format(warehouse, warehouse_name, warehouse_sts)
+            print("Warehouse {} Created".format(warehouse))
+            cursor.execute(new_warehouse)
+            connection.commit()
+            connection.close()
+
+
+    # ----------------
+    #    Login Data
+    # ----------------
+    user_logged = session.get('user_logged')
+    user_privileges = session.get('user_privileges')
+    warehouse_logged = session.get('warehouse_logged')
+
+    # ---- Database Connection ----
+    connection, cursor = dbconnection()
+
+    # ---- Database Users by Role query ----
+
+    webcall = open('../src/db/webcalls/warehouse/all_warehouse.sql', mode='r')
+    wh_query = webcall.read()
+    webcall.close()
+    cursor.execute(wh_query)
+    wh_query_results = cursor.fetchall()
+
+    if session.get('user_privileges') == 'R' or session.get('user_privileges') == 'E' or session.get(
+            'user_privileges') == 'S':
+        return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged,
+                               user_privileges=user_privileges)
+    else:
+        return render_template('configuration/warehouse_configuration.html', user_logged=f'{user_logged}',
+                               warehouse_logged=warehouse_logged, user_privileges=user_privileges,
+                               wh_query_results=wh_query_results)
+
+
+@app.route('/edit_wh/<string:id>')
+def edit_wh(id):
+    # ----------------
+    #    Login Data
+    # ----------------
+    user_logged = session.get('user_logged')
+    user_privileges = session.get('user_privileges')
+    warehouse_logged = session.get('warehouse_logged')
+    warehouse = session.get('warehouse_logged').split()[0]
+
+    # ----------------
+    #    DataBase
+    # ----------------
+    connection, cursor = dbconnection()
+
+    webcall = open('../src/db/webcalls/warehouse/data_2_edit_warehouse_query.sql', mode='r')
+    edit_warehouse_query = webcall.read()
+    webcall.close()
+    edit_warehouse_query = edit_warehouse_query.format(id)
+    cursor.execute(edit_warehouse_query)
+    data2edit = cursor.fetchall()
+
+    # all warehouses
+    webcall = open('../src/db/webcalls/warehouse/all_warehouse.sql', mode='r')
+    wh_query = webcall.read()
+    webcall.close()
+    cursor.execute(wh_query)
+    wh_query_results = cursor.fetchall()
+
+    if session.get('user_privileges') == 'R':
+        return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged,
+                               user_privileges=user_privileges)
+    else:
+        return render_template('configuration/warehouse_edit_configuration.html', user_logged=f'{user_logged}',
+                               warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse,
+                               data2edit=data2edit, wh_query_results=wh_query_results)
+
+
 @app.route('/forms_config')
 def forms_config():
     if session.get('user_logged') is None:
