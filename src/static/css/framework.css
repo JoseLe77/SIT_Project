@@ -413,8 +413,8 @@ color: #fff;
 
 .footer-abajo{margin-top: auto;}
 
-.Enabled{background-color: #E2EFDA; text-align:center;}
-.Disabled{background-color: #FFA3A3; text-align:center;}
+.Enabled{background-color: #E2EFDA; text-align:center; line-height:1.5;}
+.Disabled{background-color: #FFA3A3; text-align:center; line-height:1.5;}
 
 /* -- SATUSES CLASSES --*/
 /* -- Pending status --*/

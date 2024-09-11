@@ -6,16 +6,18 @@
     <section class="card">
         <h2 class="display-4 texto-derecha no-margen" style="color:var(--color-rojo); font-weight:bold;">EDIT WAREHOUSE</h2>
         <form action="/update_wh/{{data2edit[0][0]}}" method="POST" class="main-section_form ">
-            <label for="wh_num" style="font-weight:bold;">Warehouse Number</label>
-            <input type="text" class="form-control input" id="wh_num" name="wh_num" value="{{data2edit[0][0]}}">
-            <label for="wh_id" style="font-weight:bold;">Warehouse ID</label>
+            <br>
+            <label for="wh_id" style="font-weight:bold;">ID</label>
             <input type="text" class="form-control input" id="wh_id" name="wh_id" value="{{data2edit[0][1]}}">
-            <label for="wh_nam" style="font-weight:bold;">Warehouse Name</label>
+            <label for="wh_nam" style="font-weight:bold;">Name</label>
             <input type="text" class="form-control input" id="wh_nam" name="wh_nam" value="{{data2edit[0][2]}}">
-            <select class="form-control input" id="wh_sts" name="wh_sts" placeholder="Warehouse Status">
-                <option name="enabled" value="1">Enabled</option>
-                <option name="disabled" value="0">Disabled</option>
+            <label for="wh_sts" style="font-weight:bold;">Status</label>
+            <br>
+            <select class="form-control input" id="wh_sts" name="wh_sts" style="width:50%;" placeholder="Warehouse Status">
+                <option name="{{data2edit[0][4]}}" class="{{data2edit[0][4]}}" value="{{data2edit[0][3]}}">{{data2edit[0][4]}}</option>
+                <option name="{data2edit[0][6]}}" class="{{data2edit[0][6]}}" value="{{data2edit[0][5]}}">{{data2edit[0][6]}}</option>
             </select>
+            <br>
             <button class="boton" type="submit">Save</button>
             <button class="boton" type="submit"><a href="{{url_for('warehouse_configuration')}}">Cancel</a></button>
         </form>

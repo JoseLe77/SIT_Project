@@ -849,20 +849,23 @@ def new_warehouse():
 
 
             print(warehouse, warehouse_name, warehouse_sts)
-            # ----------------
-            #    DataBase
-            # ----------------
-            connection, cursor = dbconnection()
 
-            webcall = open('../src/db/webcalls/warehouse/new_warehouse_insert_query.sql', mode='r')
-            new_warehouse_query = webcall.read()
-            webcall.close()
-            new_warehouse = new_warehouse_query.format(warehouse, warehouse_name, warehouse_sts)
-            print("Warehouse {} Created".format(warehouse))
-            cursor.execute(new_warehouse)
-            connection.commit()
-            connection.close()
+            if warehouse is not None or warehouse_name is not None:
+                # ----------------
+                #    DataBase
+                # ----------------
+                connection, cursor = dbconnection()
 
+                webcall = open('../src/db/webcalls/warehouse/new_warehouse_insert_query.sql', mode='r')
+                new_warehouse_query = webcall.read()
+                webcall.close()
+                new_warehouse = new_warehouse_query.format(warehouse, warehouse_name, warehouse_sts)
+                print("Warehouse {} Created".format(warehouse))
+                cursor.execute(new_warehouse)
+                connection.commit()
+                connection.close()
+            else:
+                Print('Warehouse data is not complete filled.')
 
     # ----------------
     #    Login Data
@@ -929,6 +932,34 @@ def edit_wh(id):
                                warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse,
                                data2edit=data2edit, wh_query_results=wh_query_results)
 
+@app.route('/update_wh/<wh_num>', methods=['POST'])
+def update_wh(wh_num):
+    if request.method == 'POST':
+        warehouse = request.form['wh_id']
+        warehouse_name = request.form['wh_nam']
+        if request.form['wh_sts'] == 'Enabled':
+            warehouse_active = 1
+        elif request.form['wh_sts'] == 'Disabled':
+            warehouse_active = 0
+        else:
+            warehouse_active = request.form['wh_sts']
+
+        # ----------------
+        #    DataBase
+        # ----------------
+        connection, cursor = dbconnection()
+
+        # print('DB connected successfully - update')
+        webcall = open('../src/db/webcalls/warehouse/update_selected_warehouse_query.sql', mode='r')
+        update_warehouse_query = webcall.read()
+        webcall.close()
+        update_warehouse_query = update_warehouse_query.format(warehouse,warehouse_name, warehouse_active, wh_num )
+        print(update_warehouse_query)
+        cursor.execute(update_warehouse_query)
+        connection.commit()
+        connection.close()
+        print("Warehouse {} Modified".format(warehouse))
+        return redirect(url_for('warehouse_configuration'))
 
 @app.route('/forms_config')
 def forms_config():
