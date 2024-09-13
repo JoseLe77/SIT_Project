@@ -10,7 +10,9 @@
             <form action="/users_configuration" method="POST" class="main-section_form ">
                 <label for="wh_id" style="font-weight:bold;">Warehouse</label>
                 <select class="form-control input" id="wh_id" name="wh_id" placeholder="warehouse number">
-                    <option name="warehouse">{{ warehouse_logged }}</option>
+                    {% for warehouses in warehouse_logged_list %}
+                        <option name="warehouse">{{ warehouses.0 }}</option>
+                    {% endfor %}
                 </select>
                 <label for="usr_id" style="font-weight:bold;">User</label>
                 <input type="text" class="form-control input" id="usr_id" name="usr_id" placeholder="User">

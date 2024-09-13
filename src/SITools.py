@@ -1262,6 +1262,28 @@ def users_config():
         user_privileges = session.get('user_privileges')
         warehouse_logged = session.get('warehouse_logged')
         warehouse = session.get('warehouse_logged').split()[0]
+        if session.get('user_privileges') == 'A':
+            # ---- Database Connection ----
+            connection, cursor = dbconnection()
+
+            webcall = open('db/webcalls/warehouse/warehouse_logged_admin.sql', mode='r')
+            get_warehouses = webcall.read()
+            webcall.close()
+            get_warehouses_2_select = get_warehouses.format(warehouse_logged, warehouse_logged)
+            cursor.execute(get_warehouses_2_select)
+            warehouse_logged_list = cursor.fetchall()
+            print(warehouse_logged_list)
+        else:
+            # ---- Database Connection ----
+            connection, cursor = dbconnection()
+
+            webcall = open('db/webcalls/warehouse/warehouse_logged.sql', mode='r')
+            get_warehouses = webcall.read()
+            webcall.close()
+            get_warehouse_2_select = get_warehouses.format(warehouse_logged)
+            cursor.execute(get_warehouse_2_select)
+            warehouse_logged_list = cursor.fetchall()
+            print(warehouse_logged_list)
 
         # ---- Database Connection ----
         connection, cursor = dbconnection()
@@ -1293,7 +1315,7 @@ def users_config():
         if session.get('user_privileges') == 'R' or session.get('user_privileges') == 'E':
             return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
         else:
-            return render_template('configuration/users_configuration.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, all_users_results=all_users_results, hierarchies_to_select=hierarchies_to_select, role_to_select=role_to_select)
+            return render_template('configuration/users_configuration.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, all_users_results=all_users_results, hierarchies_to_select=hierarchies_to_select, role_to_select=role_to_select, warehouse_logged_list=warehouse_logged_list)
 
 
 @app.route('/users_configuration', methods=["POST", "GET"])
