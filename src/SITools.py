@@ -209,8 +209,10 @@ def tools():
 
         boton_change = ('Done Tasks','done_tasks')
         note_change = ('Notes','notes')
+        csv_reader_change = ('CSV Reader', 'csv_reader')
+        barcode_generator_change = ('Barcode', 'barcode_generator')
 
-        return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, all_tasks_results=all_tasks_results, boton_change=boton_change, note_change=note_change)
+        return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, all_tasks_results=all_tasks_results, boton_change=boton_change, note_change=note_change, csv_reader_change=csv_reader_change, barcode_generator_change=barcode_generator_change)
 
 @app.route('/done_tasks')
 def done_tasks():
@@ -251,7 +253,11 @@ def done_tasks():
 
         boton_change = ('Task To Do', 'tools')
         note_change = ('Notes', 'notes')
-        return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, all_tasks_results=all_tasks_results, boton_change=boton_change, note_change=note_change)
+        csv_reader_change = ('CSV Reader', 'csv_reader')
+        barcode_generator_change = ('Barcode', 'barcode_generator')
+
+
+        return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, all_tasks_results=all_tasks_results, boton_change=boton_change, note_change=note_change, csv_reader_change=csv_reader_change, barcode_generator_change=barcode_generator_change)
 
 
 @app.route('/new_task')
@@ -342,11 +348,13 @@ def save_new_task():
 
             boton_change = ('Done Tasks', 'done_tasks')
             note_change = ('Notes', 'notes')
+            csv_reader_change = ('CSV Reader', 'csv_reader')
+            barcode_generator_change = ('Barcode', 'barcode_generator')
 
         if session.get('user_privileges') == 'R':
             return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
         else:
-            return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, all_tasks_results=all_tasks_results, boton_change=boton_change, note_change=note_change)
+            return render_template('tools.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, all_tasks_results=all_tasks_results, boton_change=boton_change, note_change=note_change, csv_reader_change=csv_reader_change,barcode_generator_change=barcode_generator_change)
 
 @app.route('/edit_task/<string:id>')
 def edit_task(id):
@@ -480,9 +488,10 @@ def notes():
 
         boton_change = ('Task To Do', 'tools')
         note_change = ('New Note', 'new_note')
+        csv_reader_change = ('CSV Reader', 'csv_reader')
+        barcode_generator_change = ('Barcode', 'barcode_generator')
 
-        return render_template('notes.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, Active_notes_query=Active_notes_query, boton_change=boton_change, note_change=note_change)
-
+        return render_template('notes.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, Active_notes_query=Active_notes_query, boton_change=boton_change, note_change=note_change, csv_reader_change=csv_reader_change, barcode_generator_change=barcode_generator_change)
 
 @app.route('/new_note')
 def new_note():
@@ -548,11 +557,13 @@ def save_new_note():
 
             boton_change = ('Task To Do', 'tools')
             note_change = ('New Note', 'new_note')
+            csv_reader_change = ('CSV Reader', 'csv_reader')
+            barcode_generator_change = ('Barcode', 'barcode_generator')
 
         if session.get('user_privileges') == 'R':
             return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
         else:
-            return render_template('notes.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse, Active_notes_query=Active_notes_query, note_change=note_change, boton_change=boton_change )
+            return render_template('notes.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse, Active_notes_query=Active_notes_query, note_change=note_change, boton_change=boton_change, csv_reader_change=csv_reader_change, barcode_generator_change=barcode_generator_change)
 
 
 @app.route('/edit_note/<string:id>')
@@ -623,9 +634,6 @@ def update_note(note_id):
             print("Note {} Modified".format(note_id))
             return redirect(url_for('notes'))
 
-
-
-
 @app.route('/delete_note/<note_id>')
 def delete_note(note_id):
     if session.get('user_logged') is None:
@@ -659,6 +667,71 @@ def delete_note(note_id):
         print("Note {} Deleted".format(id))
         return redirect(url_for('notes'))
 
+
+@app.route('/csv_reader')
+def csv_reader():
+    if session.get('user_logged') is None:
+        login_error = 'Is not possible to access this way.'
+        flash(login_error)
+        return redirect(url_for('index'))
+    else:
+        user_logged = session.get('user_logged')
+        user_id_logged = session.get('user_id_logged')
+        user_privileges = session.get('user_privileges')
+        warehouse_logged = session.get('warehouse_logged')
+        warehouse = session.get('warehouse_logged').split()[0]
+
+        # Call the db connection function
+        connection, cursor = dbconnection()
+
+        # ---- Database Active tools query ----
+        webcall = open('../src/db/webcalls/tools/Enabled_tools_query.sql', mode='r')
+        tools_query = webcall.read()
+        webcall.close()
+        tools_query = tools_query.format(warehouse)
+        cursor.execute(tools_query)
+        enabled_tools_results = cursor.fetchall()
+
+        boton_change = ('Task To Do', 'tools')
+        note_change = ('Notes','notes')
+        csv_reader_change = ('CSV Reader','csv_reader')
+        barcode_generator_change = ('Barcode', 'barcode_generator')
+
+        return render_template('csv_reader.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, warehouse_logged=warehouse_logged, user_privileges=user_privileges, enabled_tools_results=enabled_tools_results, boton_change=boton_change, note_change=note_change, csv_reader_change=csv_reader_change, barcode_generator_change=barcode_generator_change)
+
+@app.route('/barcode_generator')
+def barcode_generator():
+    if session.get('user_logged') is None:
+        login_error = 'Is not possible to access this way.'
+        flash(login_error)
+        return redirect(url_for('index'))
+    else:
+        user_logged = session.get('user_logged')
+        user_id_logged = session.get('user_id_logged')
+        user_privileges = session.get('user_privileges')
+        warehouse_logged = session.get('warehouse_logged')
+        warehouse = session.get('warehouse_logged').split()[0]
+
+        # Call the db connection function
+        connection, cursor = dbconnection()
+
+        # ---- Database Active tools query ----
+        webcall = open('../src/db/webcalls/tools/Enabled_tools_query.sql', mode='r')
+        tools_query = webcall.read()
+        webcall.close()
+        tools_query = tools_query.format(warehouse)
+        cursor.execute(tools_query)
+        enabled_tools_results = cursor.fetchall()
+
+        boton_change = ('Task To Do', 'tools')
+        note_change = ('Notes', 'notes')
+        csv_reader_change = ('CSV Reader', 'csv_reader')
+        barcode_generator_change = ('Barcode', 'barcode_generator')
+
+        return render_template('barcode_generator.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged,
+                               warehouse_logged=warehouse_logged, user_privileges=user_privileges,
+                               enabled_tools_results=enabled_tools_results, boton_change=boton_change,
+                               note_change=note_change, csv_reader_change=csv_reader_change, barcode_generator_change=barcode_generator_change)
 
 @app.route('/configuration')
 def configuration():
@@ -741,11 +814,152 @@ def warehouse_configuration():
         user_logged = session.get('user_logged')
         user_privileges = session.get('user_privileges')
         warehouse_logged = session.get('warehouse_logged')
-        if session.get('user_privileges') == 'R' or session.get('user_privileges') == 'E':
+
+        # ---- Database Connection ----
+        connection, cursor = dbconnection()
+
+        # ---- Database Users by Role query ----
+
+        webcall = open('../src/db/webcalls/warehouse/all_warehouse.sql', mode='r')
+        wh_query = webcall.read()
+        webcall.close()
+        cursor.execute(wh_query)
+        wh_query_results = cursor.fetchall()
+
+        if session.get('user_privileges') == 'R' or session.get('user_privileges') == 'E' or session.get('user_privileges') == 'S':
             return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
         else:
-            return render_template('configuration/warehouse_configuration.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
+            return render_template('configuration/warehouse_configuration.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, wh_query_results=wh_query_results)
 
+
+@app.route('/new_warehouse', methods=["POST", "GET"])
+def new_warehouse():
+    if session.get('user_logged') is None:
+        login_error = 'Is not possible to access without an user.'
+        flash(login_error)
+        return redirect(url_for('index'))
+    else:
+        if request.method == 'POST':
+            # ----------------
+            #    HTML Form
+            # ----------------
+            warehouse = request.form['wh_id']
+            warehouse_name = request.form['wh_nam']
+            warehouse_sts = int(request.form['wh_sts'])
+
+
+            print(warehouse, warehouse_name, warehouse_sts)
+
+            if warehouse is not None or warehouse_name is not None:
+                # ----------------
+                #    DataBase
+                # ----------------
+                connection, cursor = dbconnection()
+
+                webcall = open('../src/db/webcalls/warehouse/new_warehouse_insert_query.sql', mode='r')
+                new_warehouse_query = webcall.read()
+                webcall.close()
+                new_warehouse = new_warehouse_query.format(warehouse, warehouse_name, warehouse_sts)
+                print("Warehouse {} Created".format(warehouse))
+                cursor.execute(new_warehouse)
+                connection.commit()
+                connection.close()
+            else:
+                Print('Warehouse data is not complete filled.')
+
+    # ----------------
+    #    Login Data
+    # ----------------
+    user_logged = session.get('user_logged')
+    user_privileges = session.get('user_privileges')
+    warehouse_logged = session.get('warehouse_logged')
+
+    # ---- Database Connection ----
+    connection, cursor = dbconnection()
+
+    # ---- Database Users by Role query ----
+
+    webcall = open('../src/db/webcalls/warehouse/all_warehouse.sql', mode='r')
+    wh_query = webcall.read()
+    webcall.close()
+    cursor.execute(wh_query)
+    wh_query_results = cursor.fetchall()
+
+    if session.get('user_privileges') == 'R' or session.get('user_privileges') == 'E' or session.get(
+            'user_privileges') == 'S':
+        return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged,
+                               user_privileges=user_privileges)
+    else:
+        return render_template('configuration/warehouse_configuration.html', user_logged=f'{user_logged}',
+                               warehouse_logged=warehouse_logged, user_privileges=user_privileges,
+                               wh_query_results=wh_query_results)
+
+
+@app.route('/edit_wh/<string:id>')
+def edit_wh(id):
+    # ----------------
+    #    Login Data
+    # ----------------
+    user_logged = session.get('user_logged')
+    user_privileges = session.get('user_privileges')
+    warehouse_logged = session.get('warehouse_logged')
+    warehouse = session.get('warehouse_logged').split()[0]
+
+    # ----------------
+    #    DataBase
+    # ----------------
+    connection, cursor = dbconnection()
+
+    webcall = open('../src/db/webcalls/warehouse/data_2_edit_warehouse_query.sql', mode='r')
+    edit_warehouse_query = webcall.read()
+    webcall.close()
+    edit_warehouse_query = edit_warehouse_query.format(id)
+    cursor.execute(edit_warehouse_query)
+    data2edit = cursor.fetchall()
+
+    # all warehouses
+    webcall = open('../src/db/webcalls/warehouse/all_warehouse.sql', mode='r')
+    wh_query = webcall.read()
+    webcall.close()
+    cursor.execute(wh_query)
+    wh_query_results = cursor.fetchall()
+
+    if session.get('user_privileges') == 'R':
+        return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged,
+                               user_privileges=user_privileges)
+    else:
+        return render_template('configuration/warehouse_edit_configuration.html', user_logged=f'{user_logged}',
+                               warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse,
+                               data2edit=data2edit, wh_query_results=wh_query_results)
+
+@app.route('/update_wh/<wh_num>', methods=['POST'])
+def update_wh(wh_num):
+    if request.method == 'POST':
+        warehouse = request.form['wh_id']
+        warehouse_name = request.form['wh_nam']
+        if request.form['wh_sts'] == 'Enabled':
+            warehouse_active = 1
+        elif request.form['wh_sts'] == 'Disabled':
+            warehouse_active = 0
+        else:
+            warehouse_active = request.form['wh_sts']
+
+        # ----------------
+        #    DataBase
+        # ----------------
+        connection, cursor = dbconnection()
+
+        # print('DB connected successfully - update')
+        webcall = open('../src/db/webcalls/warehouse/update_selected_warehouse_query.sql', mode='r')
+        update_warehouse_query = webcall.read()
+        webcall.close()
+        update_warehouse_query = update_warehouse_query.format(warehouse,warehouse_name, warehouse_active, wh_num )
+        print(update_warehouse_query)
+        cursor.execute(update_warehouse_query)
+        connection.commit()
+        connection.close()
+        print("Warehouse {} Modified".format(warehouse))
+        return redirect(url_for('warehouse_configuration'))
 
 @app.route('/forms_config')
 def forms_config():

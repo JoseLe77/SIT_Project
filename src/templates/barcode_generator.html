@@ -1,0 +1,78 @@
+{% extends './base.html' %}
+{% block customCSS %}{% endblock %}
+{% block title %}Barcode Generator{% endblock %}
+{% block main %}
+<div class="contendor-ancho">
+    <nav class="menu tools_menu">
+        {%for button in enabled_tools_results %}
+         <ul>
+              <li>
+                <a href="{{ button.1}}" style="color:#fff;" target="_blank">{{ button.0 }}</a>
+              </li>
+         </ul>
+        {%- endfor -%}
+        <!-- older one
+        <ul>
+            <li><a href="https://servicenow.dhl.com/navpage.do" style="color:#fff;" target="_blank">Service NOW</a></li>
+            <li><a href="https://cssp.dhl.com/" style="color:#fff;" target="_blank">Customer Self Service</a></li>
+            <li><a href="https://jdawmaccess.dhl.com/jda_cas/login?service=https%3A%2F%2Fjdawmaccess.dhl.com%2Fjda_uam%2Fapp%2Fsec%2FHomePage%3FfatUm" style="color:#fff;" target="_blank">UAM</a></li>
+            <li><a href="https://theview-mlemea.phx-dc.dhl.com/rafdash/login.jsp" style="color:#fff;" target="_blank">The View</a></li>
+        </ul>
+        --->
+    </nav>
+</div>
+<main class="contenedor-ancho">
+    <section class="span-2">
+        <article class="tools_actions no-margen-inferior">
+            <div class="tools_tasks">
+                <a href="{{url_for(barcode_generator_change.1)}}" class="boton no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">{{barcode_generator_change.0}}</a>
+            </div>
+            <div class="tools_tools">
+                <a href="{{url_for(boton_change.1)}}" class="boton no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">{{boton_change.0}}</a>
+                <a href="{{url_for(note_change.1)}}" class="boton  no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">{{note_change.0}}</a>
+                <a href="{{url_for(csv_reader_change.1)}}" class="boton  no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">{{csv_reader_change.0}}</a>
+            </div>
+        </article>
+        <article class="card no-margen-superior barcode_article grid col-1">
+             <div class="data barcode_input grid col-4">
+                    <h2 class="display-3">Introduzca titulo y texto a generar en codigo de barras:</h2>
+                    <div class="barcode_article_inputs margen-izquierda grid col-3">
+                        <div class="title grid col-1 ">
+                            <label for="producto" class="display-5 no-margen-inferior"><h3>Titulo:</h3></label>
+                            <input type="text" name="producto" id="producto" class="display-5" onkeyup="escribir()">
+                        </div>
+                        <div class="to_convert grid col-1">
+                            <label for="ean" class="display-5 no-margen-inferior"><h3>Texto a Codigo de Barras:</h3></label>
+                            <input type="text" size="20" maxlength="30" name="ean" id="ean" class="display-5">
+                        </div>
+                    </div>
+                    <div class="botones barcode_buttons margen-izquierda">
+                        <button type="submit" id="Generar" class="boton no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">Generar</button>
+                        <a href="{{url_for(barcode_generator_change.1)}}" class="boton no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">Limpiar</a>
+                        <input type="button" name="imprimir" class="boton no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;" value="Imprimir" id="imprimir" onclick="window.print();">
+                    </div>
+                </div>
+                <div class="show card texto-centrado margen-derecha barcode_generated">
+                    <div>
+                        <div class="codpro">
+                            <input type="text" style="border:none; left:5px;" name="prod" id="prod">
+                        </div>
+                        <!-- <br><br> -->
+                        <div class="bar_code">
+                            <input type="text" style="border:none" name="prod" id="prod">
+                            <svg id="barcode"></svg>
+                        </div>
+                    </div>
+                </div>
+        </article>
+    </section>
+</main>
+<script type="text/javascript">
+    document.getElementById("Generar").addEventListener('click',function(){
+        document.getElementById("prod").value = document.getElementById("producto").value;
+        var text2 = document.getElementById("ean").value;
+        JsBarcode("#barcode", text2);
+    });
+</script>
+<script src="../static/js/JsBarcode.all.min.js"></script>
+{% endblock %}
