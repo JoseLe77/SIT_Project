@@ -2,6 +2,13 @@
 {% block customCSS %}{% endblock %}
 {% block title %}Tools Configuration{% endblock %}
 {% block configuration %}
+<section class="title_search card padding-superior no-padding-inferior">
+    <h2>TOOLS BUTTON CONFIGURATION</h2>
+    <article>
+        <label for="miBusqueda" class="material-symbols-outlined">search</label>
+        <input type="text" id="miBusqueda" placeholder="Buscar en tabla" onkeyup="filtrarTabla()">
+    </article>
+</section>
 <main class="contenedor-ancho grid col-3 med-col-2 peq-col-1">
     <section class="card">
         <h2 class="display-4 texto-derecha no-margen" style="color:var(--color-rojo); font-weight:bold;">NEW BUTTON</h2>
@@ -21,7 +28,7 @@
          <table class="tabla" id="tabla" >
             <thead class="tabla-encabezado-fijo">
                 <tr>
-                    <th class="texto-centrado ancho-numero" >Nr.</th>
+                    <!-- <th class="texto-centrado ancho-numero" >Nr.</th> -->
                     <th class="texto-centrado">NAME</th>
                     <th class="texto-centrado">URL ADDRESS</th>
                     <th class="texto-centrado">STATUS</th>
@@ -31,7 +38,7 @@
             <tbody class="tabla_con_encabezado">
                 {% for tool in all_tools_results %}
                     <tr>
-                        <td style="font-weight:bold; text-transform: uppercase; color: var(--color-primario)">{{ tool.0 }}</td>
+                        <!--<td style="font-weight:bold; text-transform: uppercase; color: var(--color-primario)">{{ tool.0 }}</td> -->
                         <td>
                             <a href="{{ tool.2 }}" style="text-decoration: none;  color: var(--color-primario);" target="_blank"><span style="font-weight:bold;">{{ tool.1 }}</span></a>
                         </td>
@@ -46,4 +53,8 @@
         </table>
     </section>
 </main>
+<script type="text/javascript">
+    $(document).ready( function () { $('#tabla').DataTable();} );
+</script>
+<script src="../static/js/table_searching.js"></script>
 {% endblock %}

@@ -27,6 +27,10 @@
             <div class="tools_tasks">
                 <a href="{{url_for(note_change.1)}}" class="boton no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">{{note_change.0}}</a>
             </div>
+            <article>
+                <label for="miBusqueda" class="material-symbols-outlined">search</label>
+                <input type="text" id="miBusqueda" placeholder="Buscar en tabla" onkeyup="filtrarTabla()">
+            </article>
             <div class="tools_tools">
                 <a href="{{url_for(boton_change.1)}}" class="boton no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">{{boton_change.0}}</a>
                 <a href="{{url_for(csv_reader_change.1)}}" class="boton  no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">{{csv_reader_change.0}}</a>
@@ -37,7 +41,7 @@
              <table class="tabla margen-inferior" id="tabla" >
                 <thead class="tabla-encabezado-fijo">
                     <tr>
-                        <th class="texto-centrado ancho-numero" >Nr.</th>
+                        <!-- <th class="texto-centrado ancho-numero" >Nr.</th> -->
                         <th class="texto-centrado">NOMBRE</th>
                         <th class="texto-centrado">DESCRIPTION</th>
                         <th class="texto-centrado">ACTION</th>
@@ -46,7 +50,7 @@
                 <tbody class="tabla_con_encabezado">
                     {% for note in Active_notes_query %}
                         <tr>
-                            <td style="font-weight:bold; text-transform: uppercase; color: var(--color-primario)">{{ note.0 }}</td>
+                            <!-- <td style="font-weight:bold; text-transform: uppercase; color: var(--color-primario)">{{ note.0 }}</td> -->
                             <td style="color: var(--color-primario) font-weight:bold text-transform: uppercase;">{{ note.1 }}</td>
                             <td style="color: var(--color-primario) font-weight:bold">{{ note.2 }}</td>
                             <td class="texto-centrado">
@@ -60,4 +64,8 @@
         </article>
     </section>
 </main>
+<script type="text/javascript">
+    $(document).ready( function () { $('#tabla').DataTable();} );
+</script>
+<script src="../static/js/table_searching.js"></script>
 {% endblock %}

@@ -3,7 +3,13 @@
 {% block title %}Warehouse Configuration{% endblock %}
 {% block configuration %}
 <main class="contenedor-ancho">
-    <p>WAREHOUSE CONFIGURATION</p>
+    <section class="title_search card padding-superior no-padding-inferior">
+        <h2>WAREHOUSE CONFIGURATION</h2>
+        <article>
+            <label for="miBusqueda" class="material-symbols-outlined">search</label>
+            <input type="text" id="miBusqueda" placeholder="Buscar en tabla" onkeyup="filtrarTabla()">
+        </article>
+    </section>
     <section class="contenedor-ancho grid col-3 med-col-2 peq-col-1">
         <article class="card">
             <h2 class="display-4 texto-derecha no-margen" style="color:var(--color-rojo); font-weight:bold;">NEW WAREHOUSE</h2>
@@ -46,4 +52,8 @@
         </article>
     </section>
 </main>
+<script type="text/javascript">
+    $(document).ready( function () { $('#tabla').DataTable();} );
+</script>
+<script src="../static/js/table_searching.js"></script>
 {% endblock %}

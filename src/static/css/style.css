@@ -96,6 +96,12 @@
     justify-content: flex-end;
 }
 
+.title_search{
+    display         :flex;
+    flex-direction  :row;
+    justify-content :space-between;
+}
+
 .tabla thead{
     background-color:   var(--color-rojo);
  }

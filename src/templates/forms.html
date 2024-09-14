@@ -3,10 +3,13 @@
 {% block title %}Forms{% endblock %}
 {% block main %}
 <main class="contenedor-ancho card no-margen-superior main-forms" style="margin-top:4px;">
-    <div class="card" style="display:flex; justify-content:flex-end;">
-        <label for="miBusqueda" class="material-symbols-outlined">search</label>
-        <input type="text" id="miBusqueda" placeholder="Buscar en tabla" onkeyup="filtrarTabla()">
-    </div>
+    <section class="title_search card padding-superior padding-inferior">
+        <h2>FORMS</h2>
+        <article>
+            <label for="miBusqueda" class="material-symbols-outlined">search</label>
+            <input type="text" id="miBusqueda" placeholder="Buscar en tabla" onkeyup="filtrarTabla()">
+        </article>
+    </section>
     <table class="tabla" id="tabla">
         <thead class="tabla-encabezado-fijo">
             <tr>
