@@ -1,1 +1,1 @@
-SELECT p.pri_id, p.pri_nam FROM "privileges" p ORDER BY pri_num DESC
+SELECT p.pri_id, p.pri_nam FROM "privileges" p WHERE pri_num >=(SELECT pri_num FROM "privileges" WHERE pri_id='{}') ORDER BY pri_num DESC

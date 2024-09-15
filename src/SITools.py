@@ -1292,7 +1292,7 @@ def users_config():
         webcall = open('../src/db/webcalls/users/All_users_query.sql', mode='r')
         users_query = webcall.read()
         webcall.close()
-        users_query = users_query.format(warehouse)
+        users_query = users_query.format(warehouse, user_privileges)
         cursor.execute(users_query)
         all_users_results = cursor.fetchall()
 
@@ -1308,6 +1308,7 @@ def users_config():
         webcall = open('../src/db/webcalls/users/get_all_roles.sql', mode='r')
         get_roles = webcall.read()
         webcall.close()
+        get_roles = get_roles.format(user_privileges)
         cursor.execute(get_roles)
         role_to_select = cursor.fetchall()
         print(role_to_select)
@@ -1410,7 +1411,7 @@ def edit_users(id):
     webcall = open('../src/db/webcalls/users/get_role_per_user_update.sql', mode='r')
     get_role = webcall.read()
     webcall.close()
-    get_role = get_role.format(id, warehouse, id, warehouse)
+    get_role = get_role.format(id, warehouse, id, warehouse, user_privileges)
     cursor.execute(get_role)
     role_to_update = cursor.fetchall()
 
@@ -1418,7 +1419,7 @@ def edit_users(id):
     webcall = open('../src/db/webcalls/users/All_users_query.sql', mode='r')
     users_query = webcall.read()
     webcall.close()
-    users_query = users_query.format(warehouse)
+    users_query = users_query.format(warehouse, user_privileges)
     cursor.execute(users_query)
     all_users_results = cursor.fetchall()
     if session.get('user_privileges') == 'R':
