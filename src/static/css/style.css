@@ -72,6 +72,11 @@
     background: var(--color-rojo);
 }
 
+.menu a.active{
+    color:      #fff;
+    background: var(--color-rojo);
+}
+
 .material-symbols-outlined{
     font-weight:    bold;
 }
