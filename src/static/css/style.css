@@ -75,6 +75,8 @@
 .menu a.active{
     color:      #fff;
     background: var(--color-rojo);
+    border-radius: 10px;
+    /* -- box-shadow: 4px 4px 2px 0px rgba(0,0,0,0.61); --*/
 }
 
 .material-symbols-outlined{

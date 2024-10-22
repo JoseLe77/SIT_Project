@@ -23,7 +23,7 @@
         </div>
         <nav class="menu" style="background: transparent;">
             <ul>
-                <li><a type="button" class="{% if request.path == url_for('home') %}active{% endif %}" href="{{url_for('home')}}"><span class="material-symbols-outlined">Home</span>&nbsp;Home</a></li>
+                <li><a type="button" class="{% if request.path == url_for('home') %}active{% endif %} {% if request.path == url_for('login') %}active{% endif %}" href="{{url_for('home')}}"><span class="material-symbols-outlined">Home</span>&nbsp;Home</a></li>
                 <li><a class="{% if request.path == url_for('forms') %}active{% endif %}" href="{{url_for('forms')}}"><span class="material-symbols-outlined">Wysiwyg</span>&nbsp;Forms</a></li>
                 <li><a class="{% if request.path == url_for('tools') %}active{% endif %}" href="{{url_for('tools')}}"><span class="material-symbols-outlined">Build</span>&nbsp;Tools</a></li>
                 <li class="{{user_privileges}}"><a class="{% if request.path == url_for('warehouse_configuration') %}active{% endif %}
