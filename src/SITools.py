@@ -953,7 +953,7 @@ def edit_wh(id):
     else:
         return render_template('configuration/warehouse_edit_configuration.html', user_logged=f'{user_logged}',
                                warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse,
-                               data2edit=data2edit, wh_query_results=wh_query_results)
+                               data2edit=data2edit, wh_query_results=wh_query_results,  config_button_active = 'active', warehouse_button_active = 'active')
 
 @app.route('/update_wh/<wh_num>', methods=['POST'])
 def update_wh(wh_num):
@@ -1082,6 +1082,7 @@ def edit_forms(id):
     edit_form_query = edit_form_query.format(id, warehouse)
     cursor.execute(edit_form_query)
     data2edit = cursor.fetchall()
+
     # all forms
     webcall = open('../src/db/webcalls/forms/All_forms_query.sql', mode='r')
     forms_query = webcall.read()
@@ -1089,10 +1090,11 @@ def edit_forms(id):
     forms_query = forms_query.format(warehouse)
     cursor.execute(forms_query)
     all_forms_results = cursor.fetchall()
+
     if session.get('user_privileges') == 'R':
         return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
     else:
-        return render_template('configuration/forms_edit_configuration.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse, data2edit=data2edit, all_forms_results=all_forms_results)
+        return render_template('configuration/forms_edit_configuration.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse, data2edit=data2edit, all_forms_results=all_forms_results, config_button_active = 'active', form_button_active = 'active')
 
 
 @app.route('/update_form/<form_id>', methods=['POST'])
@@ -1241,7 +1243,7 @@ def edit_tools(id):
     if session.get('user_privileges') == 'R':
         return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
     else:
-        return render_template('configuration/tools_edit_configuration.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse, data2edit=data2edit, all_tools_results=all_tools_results)
+        return render_template('configuration/tools_edit_configuration.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse, data2edit=data2edit, all_tools_results=all_tools_results,  config_button_active = 'active', tool_button_active = 'active')
 
 
 @app.route('/update_tool/<tool_num>', methods=['POST'])
@@ -1448,7 +1450,7 @@ def edit_users(id):
     if session.get('user_privileges') == 'R':
         return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
     else:
-        return render_template('configuration/users_edit_configuration.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse, data2edit=data2edit, hierarchies_to_update=hierarchies_to_update, role_to_update=role_to_update, all_users_results=all_users_results)
+        return render_template('configuration/users_edit_configuration.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse, data2edit=data2edit, hierarchies_to_update=hierarchies_to_update, role_to_update=role_to_update, all_users_results=all_users_results,  config_button_active = 'active', user_button_active = 'active')
 
 @app.route('/update_user/<usr_id>', methods=['POST'])
 def update_user(usr_id):

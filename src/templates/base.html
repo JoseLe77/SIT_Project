@@ -37,6 +37,7 @@
                                                             {% if request.path == url_for('users_config') %}active{% endif %}
                                                             {% if request.path == url_for('forms_config') %}active{% endif %}
                                                             {% if request.path == url_for('tools_config') %}active{% endif %}
+                                                            {% if config_button_active == 'active' %}active{% endif %}
                                                             {% if request.path == url_for('configuration_home') %}active{% endif %}" href="{{url_for('configuration_home')}}"><span class="material-symbols-outlined">Settings</span>&nbsp;Configuration</a></li>
                 <li ><a href="{{url_for('logout')}}"><span class="material-symbols-outlined">logout</span></a></li>
             </ul>
