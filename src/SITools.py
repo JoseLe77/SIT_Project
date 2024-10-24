@@ -272,13 +272,21 @@ def new_task():
     connection, cursor = dbconnection()
 
     # ---- Database Active tools query ----
+    webcall = open('../src/db/webcalls/tools/Enabled_tools_query.sql', mode='r')
+    tools_query = webcall.read()
+    webcall.close()
+    tools_query = tools_query.format(warehouse)
+    cursor.execute(tools_query)
+    enabled_tools_results = cursor.fetchall()
+
+    # ---- Database Active tools query ----
     webcall = open('../src/db/webcalls/tools/tasks_statuses_query.sql', mode='r')
     statuses_query = webcall.read()
     webcall.close()
     cursor.execute(statuses_query)
     statuses_query_results = cursor.fetchall()
 
-    return render_template('configuration/todo_add_task.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, user_privileges=user_privileges, warehouse_logged=warehouse_logged, warehouse=warehouse, statuses_query_results=statuses_query_results)
+    return render_template('configuration/todo_add_task.html', user_logged=f'{user_logged}', user_id_logged=user_id_logged, user_privileges=user_privileges, warehouse_logged=warehouse_logged, warehouse=warehouse, enabled_tools_results=enabled_tools_results, statuses_query_results=statuses_query_results)
 
 
 @app.route('/save_new_task', methods=["POST", "GET"])
@@ -380,6 +388,13 @@ def edit_task(id):
     data2edit = cursor.fetchall()
     stats = data2edit[0][4]
 
+    # ---- Database Active tools query ----
+    webcall = open('../src/db/webcalls/tools/Enabled_tools_query.sql', mode='r')
+    tools_query = webcall.read()
+    webcall.close()
+    tools_query = tools_query.format(warehouse)
+    cursor.execute(tools_query)
+    enabled_tools_results = cursor.fetchall()
 
     #all statuses
     webcall = open('db/webcalls/tools/data_2_edit_task_statuses_query.sql', mode='r')
@@ -399,7 +414,7 @@ def edit_task(id):
     if session.get('user_privileges') == 'R':
         return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges)
     else:
-        return render_template('configuration/todo_edit_task.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse, data2edit=data2edit, data2select=data2select, all_tasks_results=all_tasks_results)
+        return render_template('configuration/todo_edit_task.html', user_logged=f'{user_logged}', warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse,  enabled_tools_results=enabled_tools_results, data2edit=data2edit, data2select=data2select, all_tasks_results=all_tasks_results, tools_button_active = 'active')
 
 
 @app.route('/update_task/<task_id>', methods=['POST'])
@@ -589,13 +604,21 @@ def edit_note(id):
     cursor.execute(edit_note_query)
     data2edit = cursor.fetchall()
 
+    # ---- Database Active tools query ----
+    webcall = open('../src/db/webcalls/tools/Enabled_tools_query.sql', mode='r')
+    tools_query = webcall.read()
+    webcall.close()
+    tools_query = tools_query.format(warehouse)
+    cursor.execute(tools_query)
+    enabled_tools_results = cursor.fetchall()
+
     if session.get('user_privileges') == 'R':
         return render_template("home.html", user_logged=f'{user_logged}', warehouse_logged=warehouse_logged,
                                user_privileges=user_privileges)
     else:
         return render_template('configuration/tools_edit_note.html', user_logged=f'{user_logged}',
                                warehouse_logged=warehouse_logged, user_privileges=user_privileges, warehouse=warehouse,
-                               user_id_logged=user_id_logged, data2edit=data2edit)
+                               user_id_logged=user_id_logged, enabled_tools_results=enabled_tools_results, data2edit=data2edit, tools_button_active = 'active')
 
 
 @app.route('/update_note/<note_id>', methods=["POST", "GET"])
