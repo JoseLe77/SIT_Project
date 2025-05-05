@@ -1,0 +1,54 @@
+{% extends './base.html' %}
+{% block customCSS %}{% endblock %}
+{% block title %}CSV Reader{% endblock %}
+{% block main %}
+<div class="contendor-ancho">
+    <nav class="menu tools_menu">
+        {%for button in enabled_tools_results %}
+         <ul>
+              <li>
+                <a href="{{ button.1}}" style="color:#fff;" target="_blank">{{ button.0 }}</a>
+              </li>
+         </ul>
+        {%- endfor -%}
+        <!-- older one
+        <ul>
+            <li><a href="https://servicenow.dhl.com/navpage.do" style="color:#fff;" target="_blank">Service NOW</a></li>
+            <li><a href="https://cssp.dhl.com/" style="color:#fff;" target="_blank">Customer Self Service</a></li>
+            <li><a href="https://jdawmaccess.dhl.com/jda_cas/login?service=https%3A%2F%2Fjdawmaccess.dhl.com%2Fjda_uam%2Fapp%2Fsec%2FHomePage%3FfatUm" style="color:#fff;" target="_blank">UAM</a></li>
+            <li><a href="https://theview-mlemea.phx-dc.dhl.com/rafdash/login.jsp" style="color:#fff;" target="_blank">The View</a></li>
+        </ul>
+        --->
+    </nav>
+</div>
+<main class="contenedor-ancho">
+    <section class="span-2">
+        <article class="tools_actions no-margen-inferior">
+            <div class="tools_tasks">
+                <a href="{{url_for(csv_reader_change.1)}}" class="boton no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">{{csv_reader_change.0}}</a>
+            </div>
+            <div class="tools_tools">
+                <a href="{{url_for(boton_change.1)}}" class="boton no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">{{boton_change.0}}</a>
+                <a href="{{url_for(note_change.1)}}" class="boton  no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">{{note_change.0}}</a>
+                <a href="{{url_for(barcode_generator_change.1)}}" class="boton  no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">{{barcode_generator_change.0}}</a>
+            </div>
+        </article>
+        <article class="card no-margen-superior">
+             <section class="subirArchivo">
+                <div>
+                    Selecciona archivo:
+                    <input type="file">
+                </div>
+                <div  class="imprimirArchivo">
+                    <a href="/csv_reader" class="boton">Limpiar</a>
+                    <!-- <button class="boton" id="btnImprimirDiv" onclick="printHTML()">Imprimir</button> -->
+                </div>
+            </section>
+            <section class="visualizarArchivo">
+                <table class="tabla tabla_csv"></table>
+            </section>
+        </article>
+    </section>
+</main>
+<script src="../static/js/csv_reader.js"></script>
+{% endblock %}

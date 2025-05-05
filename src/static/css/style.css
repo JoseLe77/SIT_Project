@@ -49,17 +49,22 @@
     outline:    none;
 }
 
-.S{
-    display: block;
-}
-
-.E{
+.A, .S, .E{
     display: block;
 }
 
 .R{
     display: none;
 }
+
+#no_admin:not(.A) {
+  display: none;
+}
+
+#no_super:not(.A,.S) {
+  display: none;
+}
+
 
 .menu a:hover,
 .menu a:active{
@@ -119,6 +124,11 @@
     line-height:    2;
 }
 
+.tools_actions{
+    display: flex;
+    justify-content: space-between;
+}
+
 .wh_config{
     display:            flex;
     justify-content:    space-around;
@@ -145,7 +155,92 @@
     height:100px;
 }
 
+/* -- CSV READER styles (start) --*/
+.subirArchivo{
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px;
+    /* border-bottom: 2px solid #000; */
+    background:var(--color-amarillo) ;
+}
 
+.visualizarArchivo{
+    display:flex;
+    justify-content: space-around;
+}
+
+.imprimirArchivo{
+    padding-left: 20px;
+    display:flex;
+    justify-self: flex-end;
+}
+
+.imprimirArchivo a:hover{
+    text-decoration: none;
+    background:var(--color-primario);
+    /*-- border: 1px solid #000;
+     box-shadow: 2px 3px 5px #000; --*/
+}
+
+.tabla_csv{
+    margin-top: 10px;
+    width:100%;
+}
+
+.tabla_csv tr:nth-child(1){
+    background-color: var(--color-secundario);
+    border-bottom:5px solid black;
+    color:white;
+    font-weight: bold;
+    text-transform: uppercase;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.tabla_csv tr:nth-child(1) a{
+    color:white;
+}
+
+.tabla_csv tr:nth-child(1) td:nth-child(6){
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.tabla_csv tr:hover td{
+    background-color: var(--color-secundario-accion);
+    color:#fff;
+}
+/* -- CSV READER styles (end) --*/
+
+.barcode_article{
+    display:flex;
+    flex-direction:row;
+    justify_content: space-around;
+}
+
+.barcode_input{
+    display:flex;
+    flex-direction:column;
+    justify_content: space-between;
+    width:100%;
+}
+
+.barcode_article_inputs{
+    display:flex;
+    align-content:center;
+    width:100%;
+
+}
+
+#ean, #producto{
+    line-height:2.5;
+}
+
+.barcode_generated{
+    display:flex;
+    flex-direction:column;
+    justify-content: space-around;
+    }
 
 /*Tamaño Movil*/
 @media screen and (max-width:1024px){

@@ -6,8 +6,8 @@
     <nav class="menu menu_transition">
         <ul>
             <li><a href="{{url_for('configuration_home')}}" style="color:#fff;"><span class="material-symbols-outlined">web</span>&nbsp;Summary</a></li>
-            <li><a href="{{url_for('warehouse_configuration')}}" style="color:#fff;"><span class="material-symbols-outlined">Warehouse</span>&nbsp;Warehouse</a></li>
-            <li><a href="{{url_for('users_config')}}" style="color:#fff;"><span class="material-symbols-outlined">Group</span>&nbsp;Users</a></li>
+            <li id="no_admin" class="{{user_privileges}}"><a href="{{url_for('warehouse_configuration')}}" style="color:#fff;"><span class="material-symbols-outlined">Warehouse</span>&nbsp;Warehouse</a></li>
+            <li id="no_super" class="{{user_privileges}}"><a href="{{url_for('users_config')}}" style="color:#fff;"><span class="material-symbols-outlined">Group</span>&nbsp;Users</a></li>
             <li><a href="{{url_for('forms_config')}}" style="color:#fff;"><span class="material-symbols-outlined">Inventory</span>&nbsp;Forms</a></li>
             <li><a href="{{url_for('tools_config')}}" style="color:#fff;"><span class="material-symbols-outlined">Link</span>&nbsp;Tools</a></li>
         </ul>

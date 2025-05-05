@@ -1,0 +1,33 @@
+{% extends './configuration.html' %}
+{% block customCSS %}{% endblock %}
+{% block title %}Edit Note{% endblock %}
+{% block configuration %}
+<main class="contenedor-ancho grid col-1">
+    <section class="card">
+        <h2 class="display-4 texto-derecha no-margen" style="color:var(--color-rojo); font-weight:bold;">EDIT NOTE</h2>
+        <form action="/update_note/{{data2edit[0][0]}}" method="POST" class="main-section_form ">
+            <label for="wh_id" style="font-weight:bold;">Warehouse</label>
+            <select class="form-control input" id="wh_id" name="wh_id" placeholder="warehouse number">
+                <option name="warehouse">{{ warehouse_logged }}</option>
+            </select>
+            <div class="form_split">
+                <div style="width:10%">
+                    <label for="note_id" style="font-weight:bold;">Note ID</label>
+                    <br>
+                    <input type="text" class="form-control input" style="width:90%;" id="note_id" name="note_id" disabled value="{{data2edit[0][0]}}">
+                </div>
+                <div style="width:90%">
+                    <label for="note_title" style="font-weight:bold;">Note Title</label>
+                    <br>
+                    <input type="text" class="form-control input" style="width:100%;" id="note_title" name="note_title" value="{{data2edit[0][1]}}">
+                </div>
+            </div>
+            <br>
+            <label for="note_description" style="font-weight:bold;">Note Description</label>
+            <input type="text" class="form-control input" id="note_description" name="note_description" value="{{data2edit[0][2]}}">
+            <button class="boton" type="submit">Save</button>
+            <a href="{{url_for('notes')}}" class="boton">Cancel</a>
+        </form>
+    </section>
+</main>
+{% endblock %}

@@ -1,6 +1,6 @@
 {% extends './base.html' %}
 {% block customCSS %}{% endblock %}
-{% block title %}Tools{% endblock %}
+{% block title %}Notes{% endblock %}
 {% block main %}
 <div class="contendor-ancho">
     <nav class="menu tools_menu">
@@ -25,11 +25,10 @@
     <section class="span-2">
         <article class="tools_actions no-margen-inferior">
             <div class="tools_tasks">
-                <a href="{{url_for('new_task')}}" class="boton no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">Add Task</a>
-                <a href="{{url_for(boton_change.1)}}" class="boton no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">{{boton_change.0}}</a>
+                <a href="{{url_for(note_change.1)}}" class="boton no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">{{note_change.0}}</a>
             </div>
             <div class="tools_tools">
-                <a href="{{url_for(note_change.1)}}" class="boton  no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">{{note_change.0}}</a>
+                <a href="{{url_for(boton_change.1)}}" class="boton no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">{{boton_change.0}}</a>
                 <a href="{{url_for(csv_reader_change.1)}}" class="boton  no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">{{csv_reader_change.0}}</a>
                 <a href="{{url_for(barcode_generator_change.1)}}" class="boton  no-margen-superior no-padding-superior no-padding-inferior" style="line-height:2.5; align-item: center;">{{barcode_generator_change.0}}</a>
             </div>
@@ -39,25 +38,20 @@
                 <thead class="tabla-encabezado-fijo">
                     <tr>
                         <th class="texto-centrado ancho-numero" >Nr.</th>
-                        <th class="texto-centrado">TASK</th>
+                        <th class="texto-centrado">NOMBRE</th>
                         <th class="texto-centrado">DESCRIPTION</th>
-                        <th class="texto-centrado">COMMENTS</th>
-                        <th class="texto-centrado">TARGET DATE</th>
-                        <th class="texto-centrado">STATUS</th>
                         <th class="texto-centrado">ACTION</th>
                     </tr>
                 </thead>
                 <tbody class="tabla_con_encabezado">
-                    {% for todo in all_tasks_results %}
+                    {% for note in Active_notes_query %}
                         <tr>
-                            <td style="font-weight:bold; text-transform: uppercase; color: var(--color-primario)">{{ todo.0 }}</td>
-                            <td style="color: var(--color-primario) font-weight:bold text-transform: uppercase;">{{ todo.1 }}</td>
-                            <td style="color: var(--color-primario) font-weight:bold">{{ todo.2 }}</td>
-                            <td  style="color: var(--color-primario)">{{ todo.3 }}</td>
-                            <td  style="color: var(--color-primario) text-align:center;">{{ todo.6 }}</td>
-                            <td class="{{ todo.4 }}" style="color: var(--color-primario)">{{ todo.5 }}</td>
+                            <td style="font-weight:bold; text-transform: uppercase; color: var(--color-primario)">{{ note.0 }}</td>
+                            <td style="color: var(--color-primario) font-weight:bold text-transform: uppercase;">{{ note.1 }}</td>
+                            <td style="color: var(--color-primario) font-weight:bold">{{ note.2 }}</td>
                             <td class="texto-centrado">
-                                <a href="/edit_task/{{ todo.0 }}" class="boton verde">Edit</a>
+                                <a href="/edit_note/{{ note.0 }}" class="boton verde">Edit</a>
+                                <a href="/delete_note/{{ note.0 }}" class="boton verde">Delete</a>
                             </td>
                         </tr>
                     {% endfor %}

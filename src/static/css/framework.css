@@ -357,7 +357,15 @@ form .input:focus{
     color:          var(--color-primario);
 }
 
+.boton.oscuro{
+background: var(--color-primario);
+color: #fff;
+}
 
+.boton.oscuro:hover{
+ background: var(--color-amarillo);
+ color: #000;
+}
 
 .boton.verde{
     background: var(--color-secundario);
@@ -405,8 +413,21 @@ form .input:focus{
 
 .footer-abajo{margin-top: auto;}
 
-.Enabled{background-color: #E2EFDA; text-align:center;}
-.Disabled{background-color: #FFA3A3; text-align:center;}
+.Enabled{background-color: #E2EFDA; text-align:center; line-height:1.5;}
+.Disabled{background-color: #FFA3A3; text-align:center; line-height:1.5;}
+
+/* -- SATUSES CLASSES --*/
+/* -- Pending status --*/
+.P{background-color: #FFA3A3; text-align:center; line-height:2;}
+
+/* -- In Process status --*/
+.I{background-color: #f2eda7; text-align:center; line-height:2;}
+
+/* -- Checking status --*/
+.C{background-color: #f2a179; text-align:center; line-height:2;}
+
+/* -- Done status --*/
+.D{background-color: #E2EFDA; text-align:center; line-height:2;}
 
 
 
