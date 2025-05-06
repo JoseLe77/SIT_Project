@@ -3,14 +3,22 @@
 {% block title %}Users Configuration{% endblock %}
 {% block configuration %}
     <main class="contenedor-ancho">
-        <p>USERS CONFIGURATION</p>
+        <section class="title_search card padding-superior no-padding-inferior">
+            <h2>USERS CONFIGURATION</h2>
+            <article>
+                <label for="miBusqueda" class="material-symbols-outlined">search</label>
+                <input type="text" id="miBusqueda" placeholder="Search User" onkeyup="filtrarTabla()">
+            </article>
+        </section>
         <main class="contenedor-ancho grid col-3 med-col-2 peq-col-1">
         <section class="card">
             <h2 class="display-4 texto-derecha no-margen" style="color:var(--color-rojo); font-weight:bold;">NEW USER</h2>
             <form action="/users_configuration" method="POST" class="main-section_form ">
                 <label for="wh_id" style="font-weight:bold;">Warehouse</label>
                 <select class="form-control input" id="wh_id" name="wh_id" placeholder="warehouse number">
-                    <option name="warehouse">{{ warehouse_logged }}</option>
+                    {% for warehouses in warehouse_logged_list %}
+                        <option name="warehouse">{{ warehouses.0 }}</option>
+                    {% endfor %}
                 </select>
                 <label for="usr_id" style="font-weight:bold;">User</label>
                 <input type="text" class="form-control input" id="usr_id" name="usr_id" placeholder="User">
@@ -70,4 +78,8 @@
             </table>
         </section>
     </main>
+<script type="text/javascript">
+    $(document).ready( function () { $('#tabla').DataTable();} );
+</script>
+<script src="../static/js/table_searching.js"></script>
 {% endblock %}

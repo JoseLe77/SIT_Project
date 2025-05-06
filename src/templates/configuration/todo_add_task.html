@@ -1,7 +1,18 @@
-{% extends './configuration.html' %}
+{% extends './base.html' %}
 {% block customCSS %}{% endblock %}
 {% block title %}New Task{% endblock %}
-{% block configuration %}
+{% block main %}
+<div class="contendor-ancho">
+    <nav class="menu tools_menu">
+        {%for button in enabled_tools_results %}
+         <ul>
+              <li>
+                <a href="{{ button.1}}" style="color:#fff;" target="_blank">{{ button.0 }}</a>
+              </li>
+         </ul>
+        {%- endfor -%}
+    </nav>
+</div>
 <main class="contenedor-ancho grid col-1">
     <section class="card">
         <h2 class="display-4 texto-derecha no-margen" style="color:var(--color-rojo); font-weight:bold;">NEW TASK</h2>

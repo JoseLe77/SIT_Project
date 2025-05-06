@@ -23,15 +23,28 @@
         </div>
         <nav class="menu" style="background: transparent;">
             <ul>
-                <li><a type="button" href="{{url_for('home')}}"><span class="material-symbols-outlined">Home</span>&nbsp;Home</a></li>
-                <li><a href="{{url_for('forms')}}"><span class="material-symbols-outlined">Wysiwyg</span>&nbsp;Forms</a></li>
-                <li><a href="{{url_for('tools')}}"><span class="material-symbols-outlined">Build</span>&nbsp;Tools</a></li>
-                <li class="{{user_privileges}}"><a href="{{url_for('configuration_home')}}"><span class="material-symbols-outlined">Settings</span>&nbsp;Configuration</a></li>
-                <li><a href="{{url_for('logout')}}"><span class="material-symbols-outlined">logout</span></a></li>
+                <li><a type="button" class="{% if request.path == url_for('home') %}active{% endif %} {% if request.path == url_for('login') %}active{% endif %}" href="{{url_for('home')}}"><span class="material-symbols-outlined">Home</span>&nbsp;Home</a></li>
+                <li><a class="{% if request.path == url_for('forms') %}active{% endif %}" href="{{url_for('forms')}}"><span class="material-symbols-outlined">Wysiwyg</span>&nbsp;Forms</a></li>
+                <li><a class="{% if request.path == url_for('tools') %}active{% endif %}
+                                {% if request.path == url_for('done_tasks') %}active{% endif %}
+                                {% if request.path == url_for('new_task') %}active{% endif %}
+                                {% if tools_button_active == 'active' %}active{% endif %}
+                                {% if request.path == url_for('notes') %}active{% endif %}
+                                {% if request.path == url_for('new_note') %}active{% endif %}
+                                {% if request.path == url_for('csv_reader') %}active{% endif %}
+                                {% if request.path == url_for('barcode_generator') %}active{% endif %}" href="{{url_for('tools')}}"><span class="material-symbols-outlined">Build</span>&nbsp;Tools</a></li>
+                <li class="{{user_privileges}}"><a class="{% if request.path == url_for('warehouse_configuration') %}active{% endif %}
+                                                            {% if request.path == url_for('users_config') %}active{% endif %}
+                                                            {% if request.path == url_for('forms_config') %}active{% endif %}
+                                                            {% if request.path == url_for('tools_config') %}active{% endif %}
+                                                            {% if config_button_active == 'active' %}active{% endif %}
+                                                            {% if request.path == url_for('configuration_home') %}active{% endif %}" href="{{url_for('configuration_home')}}"><span class="material-symbols-outlined">Settings</span>&nbsp;Configuration</a></li>
+                <li ><a href="{{url_for('logout')}}"><span class="material-symbols-outlined">logout</span></a></li>
             </ul>
         </nav>
         </header>
     {% block main %}{% endblock %}
     <footer></footer>
+<script src="../static/js/button_activation.js"></script>
 </body>
 </html>
