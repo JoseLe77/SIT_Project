@@ -72,6 +72,13 @@
     background: var(--color-rojo);
 }
 
+.menu a.active{
+    color:      #fff;
+    background: var(--color-rojo);
+    border-radius: 10px;
+    /* -- box-shadow: 4px 4px 2px 0px rgba(0,0,0,0.61); --*/
+}
+
 .material-symbols-outlined{
     font-weight:    bold;
 }
@@ -94,6 +101,12 @@
 
 .form.boton{
     justify-content: flex-end;
+}
+
+.title_search{
+    display         :flex;
+    flex-direction  :row;
+    justify-content :space-between;
 }
 
 .tabla thead{

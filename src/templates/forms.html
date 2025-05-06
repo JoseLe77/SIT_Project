@@ -2,13 +2,20 @@
 {% block customCSS %}{% endblock %}
 {% block title %}Forms{% endblock %}
 {% block main %}
-    <main class="contenedor-ancho card no-margen-superior main-forms" style="margin-top:4px;">
-    <table class="tabla" id="tabla" >
+<main class="contenedor-ancho card no-margen-superior main-forms" style="margin-top:4px;">
+    <section class="title_search card padding-superior padding-inferior">
+        <h2>FORMS</h2>
+        <article>
+            <label for="miBusqueda" class="material-symbols-outlined">search</label>
+            <input type="text" id="miBusqueda" placeholder="Search by incident" onkeyup="filtrarTabla()">
+        </article>
+    </section>
+    <table class="tabla" id="tabla">
         <thead class="tabla-encabezado-fijo">
             <tr>
-                <th class="texto-centrado">INCIDENCIA</td>
-                <th class="texto-centrado">CONTACTO</td>
-                <th class="texto-centrado">FORMULARIO</td>
+                <th class="texto-centrado">INCIDENCE</td>
+                <th class="texto-centrado">CONTACT</td>
+                <th class="texto-centrado">FORM</td>
             </tr>
         </thead>
         <tbody class="tabla_con_encabezado">
@@ -27,4 +34,8 @@
         </tbody>
     </table>
 </main>
+<script type="text/javascript">
+    $(document).ready( function () { $('#tabla').DataTable();} );
+</script>
+<script src="../static/js/table_searching.js"></script>
 {% endblock %}

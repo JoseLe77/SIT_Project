@@ -5,11 +5,11 @@
 <div class="contendor-ancho">
     <nav class="menu menu_transition">
         <ul>
-            <li><a href="{{url_for('configuration_home')}}" style="color:#fff;"><span class="material-symbols-outlined">web</span>&nbsp;Summary</a></li>
-            <li id="no_admin" class="{{user_privileges}}"><a href="{{url_for('warehouse_configuration')}}" style="color:#fff;"><span class="material-symbols-outlined">Warehouse</span>&nbsp;Warehouse</a></li>
-            <li id="no_super" class="{{user_privileges}}"><a href="{{url_for('users_config')}}" style="color:#fff;"><span class="material-symbols-outlined">Group</span>&nbsp;Users</a></li>
-            <li><a href="{{url_for('forms_config')}}" style="color:#fff;"><span class="material-symbols-outlined">Inventory</span>&nbsp;Forms</a></li>
-            <li><a href="{{url_for('tools_config')}}" style="color:#fff;"><span class="material-symbols-outlined">Link</span>&nbsp;Tools</a></li>
+            <li><a class="{% if request.path == url_for('configuration_home') %}active{% endif %}" href="{{url_for('configuration_home')}}" style="color:#fff;"><span class="material-symbols-outlined">web</span>&nbsp;Summary</a></li>
+            <li id="no_admin" class="{{user_privileges}}"><a class="{% if request.path == url_for('warehouse_configuration') %}active{% endif %} {% if warehouse_button_active == 'active' %}active{% endif %}" href="{{url_for('warehouse_configuration')}}" style="color:#fff;"><span class="material-symbols-outlined">Warehouse</span>&nbsp;Warehouse</a></li>
+            <li id="no_super" class="{{user_privileges}}"><a class="{% if request.path == url_for('users_config') %}active{% endif %} {% if user_button_active == 'active' %}active{% endif %}" href="{{url_for('users_config')}}" style="color:#fff;"><span class="material-symbols-outlined">Group</span>&nbsp;Users</a></li>
+            <li><a class="{% if request.path == url_for('forms_config') %}active{% endif %} {% if form_button_active == 'active' %}active{% endif %}" href="{{url_for('forms_config')}}" style="color:#fff;"><span class="material-symbols-outlined">Inventory</span>&nbsp;Forms</a></li>
+            <li><a class="{% if request.path == url_for('tools_config') %}active{% endif %} {% if tool_button_active == 'active' %}active{% endif %}" href="{{url_for('tools_config')}}" style="color:#fff;"><span class="material-symbols-outlined">Link</span>&nbsp;Tools</a></li>
         </ul>
     </nav>
 </div>
